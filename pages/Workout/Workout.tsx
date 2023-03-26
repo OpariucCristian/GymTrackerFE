@@ -1,5 +1,5 @@
 import { useNavigation, NavigationProp } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RootStackParamList } from "../../models/root-stack-param-list";
 import {
   Button,
@@ -11,77 +11,141 @@ import {
   StyleSheet,
 } from "react-native";
 import ExerciseCard from "./ExerciseCard/ExerciseCard";
-import exerciseList from "../../Constants/exerciseList";
+import exerciseList from "../../constants/exerciseList";
 import { ScrollView } from "react-native-gesture-handler";
-import { WorkoutList } from "../../models/workout-list-interface";
+import { Workout } from "../../models/workout-list-interface";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { generateUUID } from "../../utils/uuid";
 
 export function WorkoutPage() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const [newWorkout, setNewWorkout] = useState<WorkoutList[]>([]);
-  const [workoutList, setWorkoutList] = useState<WorkoutList[][]>([]);
+  const [newWorkout, setNewWorkout] = useState<Workout | null>();
+  const [workoutList, setWorkoutList] = useState<Workout[]>([]);
 
   const [isNewWorkoutModalVisible, setIsNewWorkoutModalVisible] =
     useState<boolean>(false);
   const [isWorkoutModalVisible, setIsWorkoutModalVisible] =
     useState<boolean>(false);
 
-  const [currentWorkout, setCurrentWorkout] = useState<WorkoutList[]>();
+  const [currentWorkout, setCurrentWorkout] = useState<Workout>();
 
-  const handleAddExercise = (name: string, sets: string, weight: string) => {
-    setNewWorkout([
-      ...newWorkout,
-      { exercise: name, sets, weight, workoutId: workoutList.length + 1 },
-    ]);
-  };
-
-  const handleExitModal = () => {
-    if (newWorkout.length !== 0) {
-      setWorkoutList([...workoutList, newWorkout]);
+  const updateLocalStorage = async () => {
+    console.log("runs");
+    try {
+      const jsonValue = JSON.stringify(workoutList);
+      await AsyncStorage.setItem("workoutList", jsonValue);
+    } catch (e) {
+      console.log(e);
     }
-
-    setIsNewWorkoutModalVisible(false);
-    setNewWorkout([]);
   };
 
-  const handleStartWorkout = (workoutId: number) => {
-    workoutList.map((workoutArray) => {
-      workoutArray.forEach((workout) => {
-        if (workout.workoutId === workoutId) {
-          setCurrentWorkout(workoutArray);
-          return;
-        }
+  const getFromLocalStorage = async () => {
+    if (workoutList.length === 0) {
+      console.log("runs2");
+      try {
+        const jsonValue = await AsyncStorage.getItem("workoutList");
+        jsonValue != null ? setWorkoutList(JSON.parse(jsonValue)) : null;
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
+
+  const handleAddExercise = (
+    name: string,
+    sets: string,
+    weight: string,
+    workoutId: string
+  ) => {
+    const newExercise = {
+      exercise: name,
+      sets: sets,
+      weight: weight,
+      workoutId: workoutId,
+    };
+
+    if (newWorkout) {
+      setNewWorkout({
+        ...newWorkout,
+        workoutId,
+        workoutExercises: [...newWorkout.workoutExercises, newExercise],
       });
+    }
+  };
+
+  const handleStartWorkout = (workoutId: string) => {
+    workoutList.forEach((workout) => {
+      if (workout.workoutId === workoutId) {
+        setCurrentWorkout(workout);
+      }
     });
 
     setIsWorkoutModalVisible(true);
   };
 
+  const handleDeleteWorkout = async (workoutId: string) => {
+    const newWorkoutList = workoutList.filter((workout) => {
+      console.log(workout.workoutId, workoutId);
+      return workout.workoutId !== workoutId;
+    });
+
+    if (newWorkoutList.length === 0) {
+      setWorkoutList([]);
+    } else {
+      setWorkoutList([...newWorkoutList]);
+    }
+    console.log(workoutList);
+  };
+
+  const handleExitModal = () => {
+    if (newWorkout?.workoutExercises.length !== 0 && newWorkout) {
+      setWorkoutList([...workoutList, newWorkout]);
+    }
+
+    setIsNewWorkoutModalVisible(false);
+    setNewWorkout(null);
+  };
+
+  const handleOpenModal = () => {
+    setNewWorkout({ workoutId: generateUUID(), workoutExercises: [] });
+    setIsNewWorkoutModalVisible(true);
+  };
+
+  useEffect(() => {
+    getFromLocalStorage();
+  }, []);
+
+  useEffect(() => {
+    updateLocalStorage();
+  }, [workoutList]);
+
   return (
     <>
-      <Button
-        title={"New workout"}
-        onPress={() => setIsNewWorkoutModalVisible(true)}
-      />
+      <Button title={"New workout"} onPress={() => handleOpenModal()} />
       <Button title={"log"} onPress={() => console.log(workoutList)} />
 
       {workoutList &&
-        workoutList.map((workout, index) => {
+        workoutList?.map((workout, index) => {
+          console.log(workoutList);
           return (
             <View key={index}>
               <View>
                 <Text>Workout {index + 1}</Text>
                 <Button
                   title={`Start workout ${index + 1}`}
-                  onPress={() => handleStartWorkout(index + 1)}
+                  onPress={() => handleStartWorkout(workout?.workoutId)}
                 />
+                <Button
+                  title={`Delete workout ${index + 1}`}
+                  onPress={() => handleDeleteWorkout(workout?.workoutId)}
+                ></Button>
               </View>
 
-              {workout.map((exercise, exerciseIndex) => {
+              {workout.workoutExercises.map((exercise, exerciseIndex) => {
                 return (
                   <View key={exerciseIndex}>
                     <Text>{exercise.exercise}</Text>
-                    <CheckBox></CheckBox>
                     <Text>Sets: {exercise.sets}</Text>
                     <Text>
                       Weight: {exercise.weight} kg {"\n"}
@@ -89,6 +153,8 @@ export function WorkoutPage() {
                   </View>
                 );
               })}
+
+              {}
             </View>
           );
         })}
@@ -123,10 +189,11 @@ export function WorkoutPage() {
               name={exercise.name}
               handleAddExercise={handleAddExercise}
               id={exercise.id}
+              workoutId={newWorkout?.workoutId || ""}
             />
           ))}
         </ScrollView>
-        <Button title={"X Press me bro"} onPress={() => handleExitModal()} />
+        <Button title={"X Exit"} onPress={() => handleExitModal()} />
       </Modal>
 
       <Modal visible={isWorkoutModalVisible}>
@@ -137,7 +204,7 @@ export function WorkoutPage() {
           ></Button>
         }
 
-        {currentWorkout?.map((exercise, exerciseIndex) => {
+        {currentWorkout?.workoutExercises.map((exercise, exerciseIndex) => {
           return (
             <View key={exerciseIndex}>
               <Text>{exercise.exercise}</Text>

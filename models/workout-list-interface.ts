@@ -1,6 +1,6 @@
-export interface WorkoutList {
-  exercise: string;
-  sets: string;
-  weight: string;
-  workoutId: number;
+import { WorkoutExercise } from "./workout-exercise";
+
+export interface Workout {
+  workoutId: string;
+  workoutExercises: WorkoutExercise[];
 }

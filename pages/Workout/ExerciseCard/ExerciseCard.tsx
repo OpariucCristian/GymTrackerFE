@@ -6,10 +6,17 @@ const ExerciseCard = ({
   name,
   handleAddExercise,
   id,
+  workoutId,
 }: {
   name: string;
-  handleAddExercise: any;
+  handleAddExercise: (
+    name: string,
+    sets: string,
+    weight: string,
+    workoutId: string
+  ) => void;
   id: string;
+  workoutId: string;
 }) => {
   const [sets, setSets] = useState<string>("");
   const [weight, setWeight] = useState<string>("");
@@ -42,7 +49,7 @@ const ExerciseCard = ({
         <Button
           disabled={!sets || !weight}
           title="Add to workout"
-          onPress={() => handleAddExercise(name, sets, weight)}
+          onPress={() => handleAddExercise(name, sets, weight, workoutId)}
         />
       </View>
     </View>
