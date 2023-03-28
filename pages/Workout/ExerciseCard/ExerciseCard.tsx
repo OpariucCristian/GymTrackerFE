@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
+import { Button } from "native-base";
 
 const ExerciseCard = ({
   name,
@@ -48,9 +49,10 @@ const ExerciseCard = ({
       <View style={styles.button}>
         <Button
           disabled={!sets || !weight}
-          title="Add to workout"
           onPress={() => handleAddExercise(name, sets, weight, workoutId)}
-        />
+        >
+          Add to workout
+        </Button>
       </View>
     </View>
   );
