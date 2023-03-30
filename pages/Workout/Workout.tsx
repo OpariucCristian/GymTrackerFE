@@ -71,6 +71,7 @@ export function WorkoutPage() {
       reps,
       workoutId,
       exerciseId: generateUUID(),
+      isExerciseCompleted: false,
     };
 
     if (newWorkout && sets && weight) {
