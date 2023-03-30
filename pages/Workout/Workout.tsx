@@ -21,6 +21,7 @@ import EStyleSheet from "react-native-extended-stylesheet";
 import { WORKOUTIMAGE2 } from "../../assets/workout-backgrounds/Images";
 import CurrentWorkoutExercise from "./CurrentWorkoutExercise";
 import { WorkoutExercise } from "../../models/workout-exercise";
+import WorkoutTimer from "./WorkoutTimer/WorkoutTimer";
 
 export function WorkoutPage() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -78,7 +79,7 @@ export function WorkoutPage() {
       setNewWorkout({
         ...newWorkout,
         workoutId,
-        workoutName: newWorkoutName,
+        workoutName: newWorkoutName || `Workout ${workoutList.length + 1}`,
         workoutExercises: [...newWorkout.workoutExercises, newExercise],
       });
     }
@@ -351,7 +352,12 @@ export function WorkoutPage() {
       </Modal>
 
       <Modal visible={isWorkoutModalVisible}>
-        <Text style={styles.modalTitle}>{currentWorkout?.workoutName}</Text>
+        <Box style={styles.currentWorkoutInfo}>
+          <Text style={styles.currentWorkoutModalTitle}>
+            {currentWorkout?.workoutName}
+          </Text>
+          <WorkoutTimer />
+        </Box>
         {currentWorkout?.workoutExercises.map((exerciseItem, exerciseIndex) => {
           const { sets, weight, exercise, reps, workoutId, exerciseId } =
             exerciseItem;
@@ -368,16 +374,18 @@ export function WorkoutPage() {
             />
           );
         })}
+        <Box style={styles.currentWorkoutButtonsContainer}>
+          <Button colorScheme={"secondary"} onPress={handleExitWorkoutModal}>
+            Exit workout
+          </Button>
 
-        <Button
-          isDisabled={checkAreAllExercisesCompleted()}
-          onPress={handleFinishWorkout}
-        >
-          Finish workout
-        </Button>
-        <Button colorScheme={"secondary"} onPress={handleExitWorkoutModal}>
-          Exit workout
-        </Button>
+          <Button
+            isDisabled={checkAreAllExercisesCompleted()}
+            onPress={handleFinishWorkout}
+          >
+            Finish workout
+          </Button>
+        </Box>
       </Modal>
     </>
   );
@@ -483,6 +491,29 @@ const styles = EStyleSheet.create({
     height: "78%",
     marginTop: "60%",
     zIndex: 1,
+  },
+  currentWorkoutInfo: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    flexDirection: "column",
+    width: "100%",
+    marginTop: "13%",
+    marginLeft: "3%",
+    marginBottom: "2%",
+  },
+  currentWorkoutModalTitle: {
+    fontSize: 23,
+    fontWeight: "bold",
+  },
+  currentWorkoutButtonsContainer: {
+    display: "flex",
+    justifyContent: "space-around",
+    alignItems: "center",
+    flexDirection: "row",
+    width: "100%",
+    marginTop: "5%",
+    marginBottom: "3%",
   },
 });
 

@@ -136,20 +136,6 @@ const CurrentWorkoutExercise = ({
             accessibilityLabel={"Checkbox"}
             onChange={handleOnCheck}
           />
-          {/* <Button
-            onPress={() =>
-              handleUpdateExercise(
-                exercise,
-                updatedSets,
-                updatedWeight,
-                updatedReps,
-                workoutId,
-                exerciseId
-              )
-            }
-          >
-            <Text> Test update</Text>
-          </Button> */}
         </Box>
       </Box>
     </React.Fragment>

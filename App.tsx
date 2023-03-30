@@ -9,6 +9,8 @@ import EStyleSheet from "react-native-extended-stylesheet";
 export default function App() {
   EStyleSheet.build({
     $textColor: "#0275d8",
+    $lightGray: "#f2f2f2",
+    $darkGray: "#d3d3d3",
   });
   return (
     <>
