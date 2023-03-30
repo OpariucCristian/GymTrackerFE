@@ -24,7 +24,11 @@ const CurrentWorkoutExercise = ({
   reps: number | undefined;
   workoutId: string;
   exerciseId: string;
-  handleUpdateExercise: (updatedExercise: WorkoutExercise) => void;
+  handleUpdateExercise: (
+    isExerciseCompleted: boolean,
+    updatedExercise?: WorkoutExercise,
+    updatedExerciseId?: string
+  ) => void;
 }) => {
   const [updatedSets, setUpdatedSets] = useState<string>();
   const [updatedWeight, setUpdatedWeight] = useState<string>();
@@ -47,8 +51,8 @@ const CurrentWorkoutExercise = ({
     setIsChecked(!isChecked);
   };
 
-  const updateExercise = (): void => {
-    if (isChecked) {
+  const updateExercise = (isExerciseCompleted: boolean): void => {
+    if (isExerciseCompleted) {
       console.log("updates");
       const updatedSetsNumber = Number(updatedSets);
       const updatedWeightNumber = Number(updatedWeight);
@@ -61,9 +65,12 @@ const CurrentWorkoutExercise = ({
         reps: updatedRepsNumber,
         workoutId: workoutId,
         exerciseId: exerciseId,
+        isExerciseCompleted: isExerciseCompleted,
       };
 
-      handleUpdateExercise(updatedExercise);
+      handleUpdateExercise(isExerciseCompleted, updatedExercise);
+    } else {
+      handleUpdateExercise(isExerciseCompleted, undefined, exerciseId);
     }
   };
 
@@ -74,9 +81,7 @@ const CurrentWorkoutExercise = ({
   }, []);
 
   useEffect(() => {
-    if (isChecked) {
-      updateExercise();
-    }
+    updateExercise(isChecked);
   }, [isChecked]);
 
   return (
@@ -87,6 +92,7 @@ const CurrentWorkoutExercise = ({
           <Box>
             <Text>Sets:</Text>
             <Input
+              isDisabled={isChecked}
               size={"sm"}
               placeholder="Sets"
               keyboardType="numeric"
@@ -99,6 +105,7 @@ const CurrentWorkoutExercise = ({
           <Box>
             <Text>Weight:</Text>
             <Input
+              isDisabled={isChecked}
               size={"sm"}
               placeholder="Kg"
               keyboardType="numeric"
@@ -111,6 +118,7 @@ const CurrentWorkoutExercise = ({
           <Box>
             <Text>Reps:</Text>
             <Input
+              isDisabled={isChecked}
               size={"sm"}
               placeholder="Reps"
               keyboardType="numeric"

@@ -33,8 +33,6 @@ export function WorkoutPage() {
     useState<boolean>(false);
 
   const [currentWorkout, setCurrentWorkout] = useState<Workout>();
-  const [currentWorkoutUpdate, setCurrentWorkoutUpdate] =
-    useState<WorkoutExercise[]>();
 
   const [isWorkoutModalVisible, setIsWorkoutModalVisible] =
     useState<boolean>(false);
@@ -85,8 +83,12 @@ export function WorkoutPage() {
     }
   };
 
-  const handleUpdateExercise = (updatedExercise: WorkoutExercise) => {
-    if (currentWorkout) {
+  const handleUpdateExercise = (
+    isExerciseCompleted: boolean,
+    updatedExercise?: WorkoutExercise,
+    updatedExerciseId?: string
+  ) => {
+    if (currentWorkout && updatedExercise && isExerciseCompleted) {
       const updatedWorkoutExercises = currentWorkout.workoutExercises.map(
         (exercise) => {
           if (exercise.exerciseId === updatedExercise.exerciseId) {
@@ -97,6 +99,23 @@ export function WorkoutPage() {
         }
       );
 
+      setCurrentWorkout({
+        ...currentWorkout,
+        workoutExercises: updatedWorkoutExercises,
+      });
+    } else if (currentWorkout && updatedExerciseId && !isExerciseCompleted) {
+      const updatedWorkoutExercises = currentWorkout.workoutExercises.map(
+        (exercise) => {
+          if (exercise.exerciseId === updatedExerciseId) {
+            return {
+              ...exercise,
+              isExerciseCompleted: false,
+            };
+          } else {
+            return exercise;
+          }
+        }
+      );
       setCurrentWorkout({
         ...currentWorkout,
         workoutExercises: updatedWorkoutExercises,
@@ -114,7 +133,7 @@ export function WorkoutPage() {
     setIsWorkoutModalVisible(true);
   };
 
-  const handleExitWorkoutModal = () => {
+  const handleFinishWorkout = () => {
     if (currentWorkout) {
       const updatedWorkoutList = workoutList.map((workout) => {
         if (workout.workoutId === currentWorkout.workoutId) {
@@ -128,6 +147,10 @@ export function WorkoutPage() {
         setWorkoutList(updatedWorkoutList);
       }
     }
+    setIsWorkoutModalVisible(false);
+  };
+
+  const handleExitWorkoutModal = () => {
     setIsWorkoutModalVisible(false);
   };
 
@@ -160,6 +183,18 @@ export function WorkoutPage() {
 
   const handleNewWorkoutNameChange = (newName: string) => {
     setNewWorkoutName(newName);
+  };
+
+  const checkAreAllExercisesCompleted = () => {
+    if (currentWorkout) {
+      const areAllExercisesCompleted = currentWorkout.workoutExercises.every(
+        (exercise) => {
+          return exercise.isExerciseCompleted;
+        }
+      );
+
+      return !!!areAllExercisesCompleted;
+    }
   };
 
   useEffect(() => {
@@ -315,6 +350,7 @@ export function WorkoutPage() {
       </Modal>
 
       <Modal visible={isWorkoutModalVisible}>
+        <Text style={styles.modalTitle}>{currentWorkout?.workoutName}</Text>
         {currentWorkout?.workoutExercises.map((exerciseItem, exerciseIndex) => {
           const { sets, weight, exercise, reps, workoutId, exerciseId } =
             exerciseItem;
@@ -332,7 +368,15 @@ export function WorkoutPage() {
           );
         })}
 
-        <Button onPress={() => handleExitWorkoutModal()}>Exit workout</Button>
+        <Button
+          isDisabled={checkAreAllExercisesCompleted()}
+          onPress={handleFinishWorkout}
+        >
+          Finish workout
+        </Button>
+        <Button colorScheme={"secondary"} onPress={handleExitWorkoutModal}>
+          Exit workout
+        </Button>
       </Modal>
     </>
   );

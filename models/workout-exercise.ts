@@ -5,4 +5,5 @@ export interface WorkoutExercise {
   reps: number | undefined;
   exerciseId: string;
   workoutId: string;
+  isExerciseCompleted?: boolean;
 }
