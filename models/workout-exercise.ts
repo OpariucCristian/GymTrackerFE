@@ -1,6 +1,8 @@
 export interface WorkoutExercise {
   exercise: string;
-  sets: string;
-  weight: string;
+  sets: number | undefined;
+  weight: number | undefined;
+  reps: number | undefined;
+  exerciseId: string;
   workoutId: string;
 }

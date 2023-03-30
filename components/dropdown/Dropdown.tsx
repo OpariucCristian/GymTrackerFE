@@ -1,52 +1,69 @@
+import { Box, Pressable } from "native-base";
 import React, { FC, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
-
+import { Text, TouchableOpacity } from "react-native";
+import EStyleSheet from "react-native-extended-stylesheet";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+// import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons/";
 interface Props {
   label: string;
+  children: React.ReactNode;
 }
 
-const Dropdown: FC<Props> = ({ label }) => {
+const Dropdown: FC<Props> = ({ label, children }) => {
   const [visible, setVisible] = useState(false);
 
   const toggleDropdown = () => {
     setVisible(!visible);
   };
 
-  const renderDropdown = () => {
-    if (visible) {
-      return (
-        <Text style={styles.dropdown}>
-          This is where the dropdown will be rendered.
-        </Text>
-      );
-    }
-  };
-
   return (
-    <TouchableOpacity style={styles.button} onPress={toggleDropdown}>
-      {renderDropdown()}
-      <Text style={styles.buttonText}>{label}</Text>
-    </TouchableOpacity>
+    <React.Fragment>
+      <Box style={styles.drowndownContainer}>
+        <TouchableOpacity style={styles.button} onPress={toggleDropdown}>
+          <Text style={styles.buttonText}>{label}</Text>
+          {/* {visible ? (
+            <FontAwesomeIcon icon={faAngleUp} />
+          ) : (
+            <FontAwesomeIcon icon={faAngleDown} />
+          )} */}
+        </TouchableOpacity>
+
+        {visible && <Box style={styles.childrenDropdown}>{children}</Box>}
+      </Box>
+    </React.Fragment>
   );
 };
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
+  drowndownContainer: {
+    position: "relative",
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+    borderRadius: 5,
+    backgroundColor: "#f2f3f5",
+    paddingHorizontal: 10,
+    paddingBottom: 5,
+  },
   button: {
+    position: "relative",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#efefef",
     height: 50,
-    width: "90%",
+    width: "100%",
     paddingHorizontal: 10,
-    zIndex: 1,
   },
   buttonText: {
     flex: 1,
-    textAlign: "center",
   },
-  dropdown: {
-    position: "absolute",
-    backgroundColor: "#fff",
-    top: 50,
+  childrenDropdown: {
+    position: "relative",
+
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
   },
 });
+
+export default Dropdown;

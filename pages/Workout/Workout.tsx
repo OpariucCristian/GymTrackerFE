@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { RootStackParamList } from "../../models/root-stack-param-list";
 import {
   View,
-  Text,
   Modal,
   Pressable,
   TouchableWithoutFeedback,
@@ -11,33 +10,36 @@ import {
   Animated,
   GestureResponderEvent,
 } from "react-native";
-import ExerciseCard from "./ExerciseCard/ExerciseCard";
+import ExerciseInputField from "./ExerciseInputField";
 import exerciseList from "../../constants/exerciseList";
 import { TextInput, ScrollView, Swipeable } from "react-native-gesture-handler";
 import { Workout } from "../../models/workout-list-interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { generateUUID } from "../../utils/uuid";
-import { Box, Button, FlatList } from "native-base";
+import { Box, Button, FlatList, Text } from "native-base";
 import EStyleSheet from "react-native-extended-stylesheet";
 import { WORKOUTIMAGE2 } from "../../assets/workout-backgrounds/Images";
+import CurrentWorkoutExercise from "./CurrentWorkoutExercise";
+import { WorkoutExercise } from "../../models/workout-exercise";
 
 export function WorkoutPage() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const [newWorkout, setNewWorkout] = useState<Workout | null>();
   const [workoutList, setWorkoutList] = useState<Workout[]>([]);
 
+  const [newWorkout, setNewWorkout] = useState<Workout | null>();
   const [newWorkoutName, setNewWorkoutName] = useState<string>("");
-
   const [isNewWorkoutModalVisible, setIsNewWorkoutModalVisible] =
-    useState<boolean>(false);
-  const [isWorkoutModalVisible, setIsWorkoutModalVisible] =
     useState<boolean>(false);
 
   const [currentWorkout, setCurrentWorkout] = useState<Workout>();
+  const [currentWorkoutUpdate, setCurrentWorkoutUpdate] =
+    useState<WorkoutExercise[]>();
+
+  const [isWorkoutModalVisible, setIsWorkoutModalVisible] =
+    useState<boolean>(false);
 
   const updateLocalStorage = async () => {
-    console.log("runs");
     try {
       const jsonValue = JSON.stringify(workoutList);
       await AsyncStorage.setItem("workoutList", jsonValue);
@@ -48,7 +50,6 @@ export function WorkoutPage() {
 
   const getFromLocalStorage = async () => {
     if (workoutList.length === 0) {
-      console.log("runs2");
       try {
         const jsonValue = await AsyncStorage.getItem("workoutList");
         jsonValue != null ? setWorkoutList(JSON.parse(jsonValue)) : null;
@@ -60,23 +61,45 @@ export function WorkoutPage() {
 
   const handleAddExercise = (
     name: string,
-    sets: string,
-    weight: string,
+    sets: number | undefined,
+    weight: number | undefined,
+    reps: number | undefined,
     workoutId: string
   ) => {
     const newExercise = {
       exercise: name,
-      sets: sets,
-      weight: weight,
-      workoutId: workoutId,
+      sets,
+      weight,
+      reps,
+      workoutId,
+      exerciseId: generateUUID(),
     };
 
-    if (newWorkout) {
+    if (newWorkout && sets && weight) {
       setNewWorkout({
         ...newWorkout,
         workoutId,
         workoutName: newWorkoutName,
         workoutExercises: [...newWorkout.workoutExercises, newExercise],
+      });
+    }
+  };
+
+  const handleUpdateExercise = (updatedExercise: WorkoutExercise) => {
+    if (currentWorkout) {
+      const updatedWorkoutExercises = currentWorkout.workoutExercises.map(
+        (exercise) => {
+          if (exercise.exerciseId === updatedExercise.exerciseId) {
+            return updatedExercise;
+          } else {
+            return exercise;
+          }
+        }
+      );
+
+      setCurrentWorkout({
+        ...currentWorkout,
+        workoutExercises: updatedWorkoutExercises,
       });
     }
   };
@@ -91,9 +114,25 @@ export function WorkoutPage() {
     setIsWorkoutModalVisible(true);
   };
 
+  const handleExitWorkoutModal = () => {
+    if (currentWorkout) {
+      const updatedWorkoutList = workoutList.map((workout) => {
+        if (workout.workoutId === currentWorkout.workoutId) {
+          return currentWorkout;
+        } else {
+          return workout;
+        }
+      });
+      console.log(updatedWorkoutList[0].workoutExercises);
+      if (updatedWorkoutList.length !== 0) {
+        setWorkoutList(updatedWorkoutList);
+      }
+    }
+    setIsWorkoutModalVisible(false);
+  };
+
   const handleDeleteWorkout = async (workoutId: string) => {
     const newWorkoutList = workoutList.filter((workout) => {
-      console.log(workout.workoutId, workoutId);
       return workout.workoutId !== workoutId;
     });
 
@@ -102,7 +141,6 @@ export function WorkoutPage() {
     } else {
       setWorkoutList([...newWorkoutList]);
     }
-    console.log(workoutList);
   };
 
   const handleExitModal = () => {
@@ -169,17 +207,18 @@ export function WorkoutPage() {
 
       {workoutList &&
         workoutList?.map((workout, index) => {
-          console.log(workoutList);
-
+          const id = workout.workoutId || "";
           return (
             <Swipeable
               friction={3}
-              leftThreshold={100}
+              overshootFriction={50}
+              overshootLeft={false}
               renderRightActions={(progress, workoutId) =>
-                renderRightActions(progress, workout?.workoutId)
+                renderRightActions(progress, id)
               }
+              key={index}
             >
-              <Box key={index} style={styles.workoutCard}>
+              <Box style={styles.workoutCard}>
                 <ImageBackground
                   source={WORKOUTIMAGE2}
                   resizeMode="cover"
@@ -194,15 +233,8 @@ export function WorkoutPage() {
                     <Text>{newWorkoutName}</Text>
                     <Button
                       style={styles.startWorkoutButton}
-                      onPress={() => handleStartWorkout(workout?.workoutId)}
+                      onPress={() => handleStartWorkout(id)}
                     >{`Start`}</Button>
-                    {/* <Button
-                      style={styles.deleteWorkoutButton}
-                      onPress={() => handleDeleteWorkout(workout?.workoutId)}
-                      colorScheme="secondary"
-                    >
-                      {`Delete`}
-                    </Button> */}
                   </Box>
 
                   <Box style={styles.exercisesContainer}>
@@ -271,11 +303,10 @@ export function WorkoutPage() {
           />
 
           {exerciseList.map((exercise, index) => (
-            <ExerciseCard
+            <ExerciseInputField
               key={index}
               name={exercise.name}
               handleAddExercise={handleAddExercise}
-              id={exercise.id}
               workoutId={newWorkout?.workoutId || ""}
             />
           ))}
@@ -284,19 +315,24 @@ export function WorkoutPage() {
       </Modal>
 
       <Modal visible={isWorkoutModalVisible}>
-        {<Button onPress={() => console.log(currentWorkout)}>asd</Button>}
-
-        {currentWorkout?.workoutExercises.map((exercise, exerciseIndex) => {
+        {currentWorkout?.workoutExercises.map((exerciseItem, exerciseIndex) => {
+          const { sets, weight, exercise, reps, workoutId, exerciseId } =
+            exerciseItem;
           return (
-            <Box key={exerciseIndex}>
-              <Text>{exercise.exercise}</Text>
-              <Text>Sets: {exercise.sets}</Text>
-              <Text>
-                Weight: {exercise.weight} kg {"\n"}
-              </Text>
-            </Box>
+            <CurrentWorkoutExercise
+              sets={sets}
+              weight={weight}
+              exercise={exercise}
+              reps={reps}
+              key={exerciseIndex}
+              workoutId={workoutId}
+              exerciseId={exerciseId}
+              handleUpdateExercise={handleUpdateExercise}
+            />
           );
         })}
+
+        <Button onPress={() => handleExitWorkoutModal()}>Exit workout</Button>
       </Modal>
     </>
   );
@@ -399,7 +435,7 @@ const styles = EStyleSheet.create({
   },
   deleteWorkoutCardButton: {
     right: "25%",
-    height: "80%",
+    height: "78%",
     marginTop: "60%",
     zIndex: 1,
   },
