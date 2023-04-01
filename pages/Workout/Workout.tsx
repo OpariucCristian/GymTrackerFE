@@ -16,12 +16,13 @@ import { TextInput, ScrollView, Swipeable } from "react-native-gesture-handler";
 import { Workout } from "../../models/workout-list-interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { generateUUID } from "../../utils/uuid";
-import { Box, Button, FlatList, Text } from "native-base";
+import { Box, Button, FlatList, Input, Text } from "native-base";
 import EStyleSheet from "react-native-extended-stylesheet";
 import { WORKOUTIMAGE2 } from "../../assets/workout-backgrounds/Images";
 import CurrentWorkoutExercise from "./CurrentWorkoutExercise";
 import { WorkoutExercise } from "../../models/workout-exercise";
 import WorkoutTimer from "./WorkoutTimer/WorkoutTimer";
+import { api } from "../../api/api";
 
 export function WorkoutPage() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -168,7 +169,13 @@ export function WorkoutPage() {
     }
   };
 
-  const handleExitModal = () => {
+  const handleExitNewWorkoutModal = () => {
+    setIsNewWorkoutModalVisible(false);
+    setNewWorkout(null);
+    setNewWorkoutName("");
+  };
+
+  const handleSaveNewWorkout = () => {
     if (newWorkout?.workoutExercises.length !== 0 && newWorkout) {
       setWorkoutList([...workoutList, newWorkout]);
     }
@@ -240,76 +247,90 @@ export function WorkoutPage() {
           New workout
         </Button>
       </Box>
-      {/* <Button onPress={() => console.log(workoutList)}>log</Button> */}
 
-      {workoutList &&
-        workoutList?.map((workout, index) => {
-          const id = workout.workoutId || "";
-          return (
-            <Swipeable
-              friction={3}
-              overshootFriction={50}
-              overshootLeft={false}
-              renderRightActions={(progress, workoutId) =>
-                renderRightActions(progress, id)
-              }
-              key={index}
-            >
-              <Box style={styles.workoutCard}>
-                <ImageBackground
-                  source={WORKOUTIMAGE2}
-                  resizeMode="cover"
-                  style={styles.backgroundImage}
-                >
-                  <Box style={styles.workoutHeader}>
-                    <Text style={styles.workoutTitle}>{`${
-                      workout?.workoutName
-                        ? workout?.workoutName
-                        : `Workout ${index + 1}`
-                    }`}</Text>
-                    <Text>{newWorkoutName}</Text>
-                    <Button
-                      style={styles.startWorkoutButton}
-                      onPress={() => handleStartWorkout(id)}
-                    >{`Start`}</Button>
-                  </Box>
+      {/* Test button
+      <Button
+        onPress={() =>
+          api.post("/auth/signup", {
+            username: "secondUser",
+            email: "firstuser@firstuser.com",
+            password: "firstUser",
+            roles: ["user"],
+          })
+        }
+      >
+        Test BE
+      </Button> */}
 
-                  <Box style={styles.exercisesContainer}>
-                    <ScrollView
-                      horizontal={true}
-                      style={styles.exercisesContainerScrollable}
-                    >
-                      {workout
-                        ? workout?.workoutExercises.map(
-                            (exercise, exerciseIndex) => {
-                              return (
-                                <Box
-                                  key={exerciseIndex}
-                                  style={styles.exerciseContainer}
-                                >
-                                  <Text style={styles.workoutExerciseTitle}>
-                                    {exercise.exercise}
-                                  </Text>
-                                  <Text style={styles.workoutExerciseDetails}>
-                                    Sets: {exercise.sets}
-                                  </Text>
-                                  <Text style={styles.workoutExerciseDetails}>
-                                    Weight: {exercise.weight} kg {"\n"}
-                                  </Text>
-                                </Box>
-                              );
-                            }
-                          )
-                        : null}
-                    </ScrollView>
-                  </Box>
-                </ImageBackground>
-              </Box>
-            </Swipeable>
-          );
-        })}
+      <ScrollView style={styles.workoutListContainer}>
+        {workoutList &&
+          workoutList?.map((workout, index) => {
+            const id = workout.workoutId || "";
+            return (
+              <Swipeable
+                friction={3}
+                overshootFriction={50}
+                overshootLeft={false}
+                renderRightActions={(progress, workoutId) =>
+                  renderRightActions(progress, id)
+                }
+                key={index}
+              >
+                <Box style={styles.workoutCard}>
+                  <ImageBackground
+                    source={WORKOUTIMAGE2}
+                    resizeMode="cover"
+                    style={styles.backgroundImage}
+                  >
+                    <Box style={styles.workoutHeader}>
+                      <Text style={styles.workoutTitle}>{`${
+                        workout?.workoutName
+                          ? workout?.workoutName
+                          : `Workout ${index + 1}`
+                      }`}</Text>
+                      <Text>{newWorkoutName}</Text>
+                      <Button
+                        style={styles.startWorkoutButton}
+                        onPress={() => handleStartWorkout(id)}
+                      >{`Start`}</Button>
+                    </Box>
 
-      <Box style={styles.navbar}>
+                    <Box style={styles.exercisesContainer}>
+                      <ScrollView
+                        horizontal={true}
+                        style={styles.exercisesContainerScrollable}
+                      >
+                        {workout
+                          ? workout?.workoutExercises.map(
+                              (exercise, exerciseIndex) => {
+                                return (
+                                  <Box
+                                    key={exerciseIndex}
+                                    style={styles.exerciseContainer}
+                                  >
+                                    <Text style={styles.workoutExerciseTitle}>
+                                      {exercise.exercise}
+                                    </Text>
+                                    <Text style={styles.workoutExerciseDetails}>
+                                      Sets: {exercise.sets}
+                                    </Text>
+                                    <Text style={styles.workoutExerciseDetails}>
+                                      Weight: {exercise.weight} kg {"\n"}
+                                    </Text>
+                                  </Box>
+                                );
+                              }
+                            )
+                          : null}
+                      </ScrollView>
+                    </Box>
+                  </ImageBackground>
+                </Box>
+              </Swipeable>
+            );
+          })}
+      </ScrollView>
+      {/* <Box style={styles.navbar}>
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate("Profile", { id: 1 })}
         >
@@ -327,28 +348,48 @@ export function WorkoutPage() {
         >
           <Text>Exercises</Text>
         </TouchableWithoutFeedback>
-      </Box>
+      </Box> */}
 
       <Modal visible={isNewWorkoutModalVisible}>
-        <ScrollView>
-          <Text style={styles.modalTitle}>Exercise list</Text>
+        <Box style={styles.newWorkoutModalHeaderContainer}>
+          <Text style={styles.newWorkoutModalTitle}>Exercise list</Text>
+          <Button
+            style={styles.createNewWorkoutButton}
+            onPress={handleSaveNewWorkout}
+            isDisabled={newWorkout?.workoutExercises.length === 0}
+            colorScheme="success"
+          >
+            Create new workout
+          </Button>
+        </Box>
 
-          <TextInput
+        <Box style={styles.newWorkoutNameInput}>
+          <Input
             placeholder="Workout name"
             value={newWorkoutName}
             onChangeText={(newName) => handleNewWorkoutNameChange(newName)}
           />
+        </Box>
 
-          {exerciseList.map((exercise, index) => (
-            <ExerciseInputField
-              key={index}
-              name={exercise.name}
-              handleAddExercise={handleAddExercise}
-              workoutId={newWorkout?.workoutId || ""}
-            />
-          ))}
+        <ScrollView>
+          <Box style={styles.newExerciseInputFields}>
+            {exerciseList.map((exercise, index) => (
+              <ExerciseInputField
+                key={index}
+                name={exercise.name}
+                handleAddExercise={handleAddExercise}
+                workoutId={newWorkout?.workoutId || ""}
+              />
+            ))}
+          </Box>
         </ScrollView>
-        <Button onPress={() => handleExitModal()}>X Exit</Button>
+
+        <Button
+          style={styles.exitNewWorkoutModalButton}
+          onPress={handleExitNewWorkoutModal}
+        >
+          X Exit
+        </Button>
       </Modal>
 
       <Modal visible={isWorkoutModalVisible}>
@@ -392,6 +433,9 @@ export function WorkoutPage() {
 }
 
 const styles = EStyleSheet.create({
+  workoutListContainer: {
+    marginBottom: "10%",
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",
@@ -405,11 +449,9 @@ const styles = EStyleSheet.create({
     position: "absolute",
     bottom: 0,
   },
-  modalTitle: {
-    marginTop: "10%",
-  },
   newWorkoutButton: {
-    marginTop: "10%",
+    marginTop: "2.5%",
+    marginBottom: "2.5%",
     width: "35%",
   },
   newWorkoutButtonContainer: {
@@ -514,6 +556,34 @@ const styles = EStyleSheet.create({
     width: "100%",
     marginTop: "5%",
     marginBottom: "3%",
+  },
+  exitNewWorkoutModalButton: {
+    paddingBottom: "5%",
+  },
+  newWorkoutModalHeaderContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginLeft: "3%",
+
+    flexDirection: "row",
+    width: "95%",
+    marginTop: "12%",
+    marginBottom: "5%",
+  },
+  createNewWorkoutButton: {
+    width: "40%",
+  },
+  newWorkoutModalTitle: {
+    width: "60%",
+  },
+  newWorkoutNameInput: {
+    width: "90%",
+    paddingBottom: "3%",
+    alignSelf: "center",
+  },
+  newExerciseInputFields: {
+    marginTop: "5%",
   },
 });
 
