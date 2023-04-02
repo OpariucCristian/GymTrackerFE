@@ -1,15 +1,17 @@
 import { Box, Pressable } from "native-base";
 import React, { FC, useState } from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { Linking, Text, TouchableOpacity } from "react-native";
 import EStyleSheet from "react-native-extended-stylesheet";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-// import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons/";
+import { faAngleDown, faAngleUp } from "@fortawesome/free-solid-svg-icons";
+import { faYoutube } from "@fortawesome/free-brands-svg-icons";
 interface Props {
   label: string;
+  youtubeLink?: string;
   children: React.ReactNode;
 }
 
-const Dropdown: FC<Props> = ({ label, children }) => {
+const Dropdown: FC<Props> = ({ label, children, youtubeLink }) => {
   const [visible, setVisible] = useState(false);
 
   const toggleDropdown = () => {
@@ -21,11 +23,20 @@ const Dropdown: FC<Props> = ({ label, children }) => {
       <Box style={styles.drowndownContainer}>
         <TouchableOpacity style={styles.button} onPress={toggleDropdown}>
           <Text style={styles.buttonText}>{label}</Text>
-          {/* {visible ? (
-            <FontAwesomeIcon icon={faAngleUp} />
+          {youtubeLink && (
+            <Text
+              style={styles.youtubeIcon}
+              onPress={() => Linking.openURL(`${youtubeLink}`)}
+            >
+              <FontAwesomeIcon size={30} icon={faYoutube} />
+            </Text>
+          )}
+
+          {visible ? (
+            <FontAwesomeIcon style={styles.arrowIcon} icon={faAngleUp} />
           ) : (
-            <FontAwesomeIcon icon={faAngleDown} />
-          )} */}
+            <FontAwesomeIcon style={styles.arrowIcon} icon={faAngleDown} />
+          )}
         </TouchableOpacity>
 
         {visible && <Box style={styles.childrenDropdown}>{children}</Box>}
@@ -40,6 +51,7 @@ const styles = EStyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "100%",
+    height: "auto",
     borderRadius: 5,
     backgroundColor: "#f2f3f5",
     paddingHorizontal: 10,
@@ -64,6 +76,8 @@ const styles = EStyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
   },
+  youtubeIcon: { marginRight: 15, marginTop: 10 },
+  arrowIcon: { marginTop: 5 },
 });
 
 export default Dropdown;

@@ -33,6 +33,7 @@ export function WorkoutPage() {
   const [newWorkoutName, setNewWorkoutName] = useState<string>("");
   const [isNewWorkoutModalVisible, setIsNewWorkoutModalVisible] =
     useState<boolean>(false);
+  const [newWorkoutNameSearch, setNewWorkoutNameSearch] = useState<string>("");
 
   const [currentWorkout, setCurrentWorkout] = useState<Workout>();
 
@@ -194,6 +195,10 @@ export function WorkoutPage() {
     setNewWorkoutName(newName);
   };
 
+  const handleNewWorkoutNameSearchChange = (newName: string) => {
+    setNewWorkoutNameSearch(newName);
+  };
+
   const checkAreAllExercisesCompleted = () => {
     if (currentWorkout) {
       const areAllExercisesCompleted = currentWorkout.workoutExercises.every(
@@ -352,7 +357,15 @@ export function WorkoutPage() {
 
       <Modal visible={isNewWorkoutModalVisible}>
         <Box style={styles.newWorkoutModalHeaderContainer}>
-          <Text style={styles.newWorkoutModalTitle}>Exercise list</Text>
+          {/* <Text style={styles.newWorkoutModalTitle}>Exercise list</Text> */}
+          <Box style={styles.newWoorkoutNameInputContainer}>
+            <Input
+              placeholder="Workout name"
+              value={newWorkoutName}
+              onChangeText={(newName) => handleNewWorkoutNameChange(newName)}
+            />
+          </Box>
+
           <Button
             style={styles.createNewWorkoutButton}
             onPress={handleSaveNewWorkout}
@@ -365,22 +378,41 @@ export function WorkoutPage() {
 
         <Box style={styles.newWorkoutNameInput}>
           <Input
-            placeholder="Workout name"
-            value={newWorkoutName}
-            onChangeText={(newName) => handleNewWorkoutNameChange(newName)}
+            placeholder="Seach for exercises"
+            value={newWorkoutNameSearch}
+            onChangeText={(searchQuery) =>
+              handleNewWorkoutNameSearchChange(searchQuery)
+            }
           />
         </Box>
 
         <ScrollView>
           <Box style={styles.newExerciseInputFields}>
-            {exerciseList.map((exercise, index) => (
-              <ExerciseInputField
-                key={index}
-                name={exercise.name}
-                handleAddExercise={handleAddExercise}
-                workoutId={newWorkout?.workoutId || ""}
-              />
-            ))}
+            {!newWorkoutNameSearch
+              ? exerciseList.map((exercise, index) => (
+                  <ExerciseInputField
+                    key={index}
+                    name={exercise.name}
+                    handleAddExercise={handleAddExercise}
+                    workoutId={newWorkout?.workoutId || ""}
+                    youtubeLink={exercise.youtubeLink}
+                  />
+                ))
+              : exerciseList
+                  .filter((exercise) =>
+                    exercise.name
+                      .toLowerCase()
+                      .includes(newWorkoutNameSearch.toLowerCase())
+                  )
+                  .map((exercise, index) => (
+                    <ExerciseInputField
+                      key={index}
+                      name={exercise.name}
+                      handleAddExercise={handleAddExercise}
+                      workoutId={newWorkout?.workoutId || ""}
+                      youtubeLink={exercise.youtubeLink}
+                    />
+                  ))}
           </Box>
         </ScrollView>
 
@@ -584,6 +616,12 @@ const styles = EStyleSheet.create({
   },
   newExerciseInputFields: {
     marginTop: "5%",
+  },
+  newWoorkoutNameInputContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "35%",
   },
 });
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Linking } from "react-native";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { Box, Button, Input, Text } from "native-base";
 import EStyleSheet from "react-native-extended-stylesheet";
@@ -10,6 +10,7 @@ const ExerciseCard = ({
   name,
   handleAddExercise,
   workoutId,
+  youtubeLink,
 }: {
   name: string;
   handleAddExercise: (
@@ -19,8 +20,8 @@ const ExerciseCard = ({
     reps: number | undefined,
     workoutId: string
   ) => void;
-
   workoutId: string;
+  youtubeLink?: string;
 }) => {
   const [sets, setSets] = useState<number>();
   const [weight, setWeight] = useState<number>();
@@ -40,7 +41,7 @@ const ExerciseCard = ({
 
   return (
     <View style={styles.cardContainer}>
-      <Dropdown label={name}>
+      <Dropdown label={name} youtubeLink={youtubeLink}>
         <React.Fragment>
           <Box style={styles.dropDownContentContainer}>
             <Box style={styles.workoutControlsContainer}>
