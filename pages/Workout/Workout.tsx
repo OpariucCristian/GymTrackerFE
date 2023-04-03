@@ -40,6 +40,8 @@ export function WorkoutPage() {
   const [isWorkoutModalVisible, setIsWorkoutModalVisible] =
     useState<boolean>(false);
 
+  const exerciseListMemo = React.useMemo(() => exerciseList, []);
+
   const updateLocalStorage = async () => {
     try {
       const jsonValue = JSON.stringify(workoutList);
@@ -146,7 +148,6 @@ export function WorkoutPage() {
           return workout;
         }
       });
-      console.log(updatedWorkoutList[0].workoutExercises);
       if (updatedWorkoutList.length !== 0) {
         setWorkoutList(updatedWorkoutList);
       }
@@ -199,7 +200,7 @@ export function WorkoutPage() {
     setNewWorkoutNameSearch(newName);
   };
 
-  const checkAreAllExercisesCompleted = () => {
+  const isWorkoutNotFinished = () => {
     if (currentWorkout) {
       const areAllExercisesCompleted = currentWorkout.workoutExercises.every(
         (exercise) => {
@@ -207,7 +208,7 @@ export function WorkoutPage() {
         }
       );
 
-      return !!!areAllExercisesCompleted;
+      return !areAllExercisesCompleted;
     }
   };
 
@@ -386,35 +387,37 @@ export function WorkoutPage() {
           />
         </Box>
 
-        <ScrollView>
-          <Box style={styles.newExerciseInputFields}>
-            {!newWorkoutNameSearch
-              ? exerciseList.map((exercise, index) => (
-                  <ExerciseInputField
-                    key={index}
-                    name={exercise.name}
-                    handleAddExercise={handleAddExercise}
-                    workoutId={newWorkout?.workoutId || ""}
-                    youtubeLink={exercise.youtubeLink}
-                  />
-                ))
-              : exerciseList
-                  .filter((exercise) =>
-                    exercise.name
-                      .toLowerCase()
-                      .includes(newWorkoutNameSearch.toLowerCase())
-                  )
-                  .map((exercise, index) => (
-                    <ExerciseInputField
-                      key={index}
-                      name={exercise.name}
-                      handleAddExercise={handleAddExercise}
-                      workoutId={newWorkout?.workoutId || ""}
-                      youtubeLink={exercise.youtubeLink}
-                    />
-                  ))}
-          </Box>
-        </ScrollView>
+        {!newWorkoutNameSearch ? (
+          <FlatList
+            data={exerciseListMemo}
+            renderItem={({ item, index }) => (
+              <ExerciseInputField
+                key={index}
+                name={item.name}
+                handleAddExercise={handleAddExercise}
+                workoutId={newWorkout?.workoutId || ""}
+                youtubeLink={item.youtubeLink}
+              />
+            )}
+          ></FlatList>
+        ) : (
+          <FlatList
+            data={exerciseListMemo.filter((exercise) => {
+              return exercise.name
+                .toLowerCase()
+                .includes(newWorkoutNameSearch.toLowerCase());
+            })}
+            renderItem={({ item, index }) => (
+              <ExerciseInputField
+                key={index}
+                name={item.name}
+                handleAddExercise={handleAddExercise}
+                workoutId={newWorkout?.workoutId || ""}
+                youtubeLink={item.youtubeLink}
+              />
+            )}
+          ></FlatList>
+        )}
 
         <Button
           style={styles.exitNewWorkoutModalButton}
@@ -453,7 +456,7 @@ export function WorkoutPage() {
           </Button>
 
           <Button
-            isDisabled={checkAreAllExercisesCompleted()}
+            isDisabled={isWorkoutNotFinished()}
             onPress={handleFinishWorkout}
           >
             Finish workout

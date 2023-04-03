@@ -2,7 +2,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Bench Press",
-    "Primary Muscles": ["deltoid", "pectoralis major"],
+    primaryMuscles: ["deltoid", "pectoralis major"],
     secondaryMuscles: ["triceps"],
     type: "compound",
     workoutType: ["strength"],
@@ -12,7 +12,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Bench Press",
-    "Primary Muscles": ["deltoid", "pectoralis major"],
+    primaryMuscles: ["deltoid", "pectoralis major"],
     secondaryMuscles: ["triceps"],
     type: "compound",
     workoutType: ["strength"],
@@ -22,7 +22,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Incline Bench Press",
-    "Primary Muscles": ["deltoid", "pectoralis major"],
+    primaryMuscles: ["deltoid", "pectoralis major"],
     secondaryMuscles: ["triceps"],
     type: "compound",
     workoutType: ["strength"],
@@ -32,7 +32,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Incline Bench Press",
-    "Primary Muscles": ["deltoid", "pectoralis major"],
+    primaryMuscles: ["deltoid", "pectoralis major"],
     secondaryMuscles: ["triceps"],
     type: "compound",
     workoutType: ["strength"],
@@ -42,7 +42,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Decline Bench Press",
-    "Primary Muscles": ["deltoid", "pectoralis major"],
+    primaryMuscles: ["deltoid", "pectoralis major"],
     secondaryMuscles: ["triceps"],
     type: "compound",
     workoutType: ["strength"],
@@ -52,7 +52,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Decline Bench Press",
-    "Primary Muscles": ["deltoid", "pectoralis major"],
+    primaryMuscles: ["deltoid", "pectoralis major"],
     secondaryMuscles: ["triceps"],
     type: "compound",
     workoutType: ["strength"],
@@ -62,7 +62,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Chest Fly",
-    "Primary Muscles": ["pectoralis major"],
+    primaryMuscles: ["pectoralis major"],
     secondaryMuscles: ["biceps", "deltoid", "finger extensors"],
     type: "compound",
     workoutType: ["strength"],
@@ -72,7 +72,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Incline Chest Fly",
-    "Primary Muscles": ["pectoralis major"],
+    primaryMuscles: ["pectoralis major"],
     secondaryMuscles: ["biceps", "deltoid", "finger extensors"],
     type: "compound",
     workoutType: ["strength"],
@@ -82,7 +82,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Decline Chest Fly",
-    "Primary Muscles": ["pectoralis major"],
+    primaryMuscles: ["pectoralis major"],
     secondaryMuscles: ["biceps", "deltoid", "finger extensors"],
     type: "compound",
     workoutType: ["strength"],
@@ -92,7 +92,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Machine Chest Fly",
-    "Primary Muscles": ["pectoralis major"],
+    primaryMuscles: ["pectoralis major"],
     secondaryMuscles: ["biceps", "deltoid", "finger extensors"],
     type: "compound",
     workoutType: ["strength"],
@@ -102,7 +102,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Cable Chest Fly",
-    "Primary Muscles": ["pectoralis major"],
+    primaryMuscles: ["pectoralis major"],
     secondaryMuscles: ["biceps", "deltoid", "finger extensors"],
     type: "compound",
     workoutType: ["strength"],
@@ -112,7 +112,7 @@ const exerciseList = [
   {
     force: "push",
     name: "High Cable Chest Fly",
-    "Primary Muscles": ["deltoid", "pectoralis major"],
+    primaryMuscles: ["deltoid", "pectoralis major"],
     secondaryMuscles: ["biceps", "finger extensors", "latissimus dorsi"],
     type: "compound",
     workoutType: ["strength"],
@@ -122,7 +122,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Single Arm Cable Chest Fly",
-    "Primary Muscles": ["pectoralis major"],
+    primaryMuscles: ["pectoralis major"],
     secondaryMuscles: [
       "external oblique",
       "latissimus dorsi",
@@ -137,7 +137,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Chest Dip",
-    "Primary Muscles": ["pectoralis major", "triceps"],
+    primaryMuscles: ["pectoralis major", "triceps"],
     secondaryMuscles: [
       "deltoid",
       "latissimus dorsi",
@@ -153,7 +153,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Bicep Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -168,7 +168,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Preacher Bicep Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -182,7 +182,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Bicep Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -197,7 +197,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Hammer Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -212,7 +212,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Reverse Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -227,7 +227,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Plank",
-    "Primary Muscles": ["abdominals", "external oblique"],
+    primaryMuscles: ["abdominals", "external oblique"],
     secondaryMuscles: [
       "deltoid",
       "gluteus maximus",
@@ -243,7 +243,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Weighted Plank",
-    "Primary Muscles": ["abdominals", "external oblique"],
+    primaryMuscles: ["abdominals", "external oblique"],
     secondaryMuscles: [
       "deltoid",
       "gluteus maximus",
@@ -259,7 +259,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Crunch",
-    "Primary Muscles": ["abdominals", "external oblique"],
+    primaryMuscles: ["abdominals", "external oblique"],
     secondaryMuscles: ["serratus anterior"],
     type: "compound",
     workoutType: ["strength"],
@@ -269,7 +269,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Cable Crunch",
-    "Primary Muscles": ["abdominals", "external oblique"],
+    primaryMuscles: ["abdominals", "external oblique"],
     secondaryMuscles: ["serratus anterior"],
     type: "compound",
     workoutType: ["strength"],
@@ -279,7 +279,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dead Bug",
-    "Primary Muscles": ["abdominals", "external oblique"],
+    primaryMuscles: ["abdominals", "external oblique"],
     secondaryMuscles: [
       "infraspinatus",
       "quadriceps",
@@ -294,7 +294,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Mountain Climbers",
-    "Primary Muscles": ["abdominals"],
+    primaryMuscles: ["abdominals"],
     secondaryMuscles: [
       "deltoid",
       "gastrocnemius",
@@ -310,7 +310,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Hanging Knee Raises",
-    "Primary Muscles": ["abdominals"],
+    primaryMuscles: ["abdominals"],
     secondaryMuscles: [
       "external oblique",
       "finger extensors",
@@ -325,7 +325,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Hanging Leg Raises",
-    "Primary Muscles": ["abdominals"],
+    primaryMuscles: ["abdominals"],
     secondaryMuscles: [
       "external oblique",
       "finger extensors",
@@ -340,7 +340,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Leg Raises",
-    "Primary Muscles": ["abdominals"],
+    primaryMuscles: ["abdominals"],
     secondaryMuscles: ["external oblique", "sartorius"],
     type: "compound",
     workoutType: ["strength"],
@@ -351,7 +351,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Deadlift",
-    "Primary Muscles": ["gluteus maximus", "gluteus medius"],
+    primaryMuscles: ["gluteus maximus", "gluteus medius"],
     secondaryMuscles: ["abductors", "quadriceps", "sartorius", "trapezius"],
     type: "compound",
     workoutType: ["powerlifting", "strength", "strongman"],
@@ -361,7 +361,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Hex Bar Deadlift",
-    "Primary Muscles": ["gluteus maximus", "gluteus medius"],
+    primaryMuscles: ["gluteus maximus", "gluteus medius"],
     secondaryMuscles: ["abductors", "quadriceps", "sartorius", "trapezius"],
     type: "compound",
     workoutType: ["powerlifting", "strength", "strongman"],
@@ -371,7 +371,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Back Squat",
-    "Primary Muscles": [
+    primaryMuscles: [
       "gluteus maximus",
       "gluteus medius",
       "hamstrings",
@@ -386,7 +386,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Smith Machine Back Squat",
-    "Primary Muscles": [
+    primaryMuscles: [
       "gluteus maximus",
       "gluteus medius",
       "hamstrings",
@@ -401,7 +401,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Lunge",
-    "Primary Muscles": ["hamstrings", "quadriceps"],
+    primaryMuscles: ["hamstrings", "quadriceps"],
     secondaryMuscles: [
       "abductors",
       "gluteus maximus",
@@ -416,7 +416,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Lunge",
-    "Primary Muscles": ["hamstrings", "quadriceps"],
+    primaryMuscles: ["hamstrings", "quadriceps"],
     secondaryMuscles: [
       "abductors",
       "gluteus maximus",
@@ -431,7 +431,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Bulgarian Split Squat",
-    "Primary Muscles": ["hamstrings", "quadriceps"],
+    primaryMuscles: ["hamstrings", "quadriceps"],
     secondaryMuscles: [
       "abductors",
       "gluteus maximus",
@@ -446,7 +446,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Hip Thrusts",
-    "Primary Muscles": ["gluteus maximus", "gluteus medius"],
+    primaryMuscles: ["gluteus maximus", "gluteus medius"],
     secondaryMuscles: [
       "abdominals",
       "abductors",
@@ -462,7 +462,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Machine Hip Thrusts",
-    "Primary Muscles": ["gluteus maximus", "gluteus medius"],
+    primaryMuscles: ["gluteus maximus", "gluteus medius"],
     secondaryMuscles: [
       "abdominals",
       "abductors",
@@ -478,7 +478,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Chest Dip",
-    "Primary Muscles": ["pectoralis major", "triceps"],
+    primaryMuscles: ["pectoralis major", "triceps"],
     secondaryMuscles: [
       "deltoid",
       "latissimus dorsi",
@@ -493,7 +493,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Deadlift",
-    "Primary Muscles": ["gluteus maximus", "gluteus medius"],
+    primaryMuscles: ["gluteus maximus", "gluteus medius"],
     secondaryMuscles: ["abductors", "quadriceps", "sartorius", "trapezius"],
     type: "compound",
     workoutType: ["powerlifting", "strength", "strongman"],
@@ -503,7 +503,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Hex Bar Deadlift",
-    "Primary Muscles": ["gluteus maximus", "gluteus medius"],
+    primaryMuscles: ["gluteus maximus", "gluteus medius"],
     secondaryMuscles: ["abductors", "quadriceps", "sartorius", "trapezius"],
     type: "compound",
     workoutType: ["powerlifting", "strength", "strongman"],
@@ -513,7 +513,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Front Squat",
-    "Primary Muscles": ["quadriceps"],
+    primaryMuscles: ["quadriceps"],
     secondaryMuscles: [
       "abdominals",
       "external oblique",
@@ -532,7 +532,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Bicep Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -547,7 +547,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Preacher Bicep Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -561,7 +561,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Bicep Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -576,7 +576,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Hammer Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -591,7 +591,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Reverse Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -606,7 +606,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Arnold Press",
-    "Primary Muscles": ["deltoid"],
+    primaryMuscles: ["deltoid"],
     secondaryMuscles: [
       "biceps",
       "infraspinatus",
@@ -623,7 +623,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Front Raise",
-    "Primary Muscles": ["deltoid"],
+    primaryMuscles: ["deltoid"],
     secondaryMuscles: [
       "finger flexors",
       "pectoralis major",
@@ -638,7 +638,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Cable Front Raise",
-    "Primary Muscles": ["deltoid"],
+    primaryMuscles: ["deltoid"],
     secondaryMuscles: [
       "finger flexors",
       "pectoralis major",
@@ -653,7 +653,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Lateral Rasie",
-    "Primary Muscles": ["deltoid"],
+    primaryMuscles: ["deltoid"],
     secondaryMuscles: [
       "external oblique",
       "finger flexors",
@@ -668,7 +668,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Military Press",
-    "Primary Muscles": ["deltoid"],
+    primaryMuscles: ["deltoid"],
     secondaryMuscles: [
       "biceps",
       "pectoralis major",
@@ -684,7 +684,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Good Mornings",
-    "Primary Muscles": ["hamstrings"],
+    primaryMuscles: ["hamstrings"],
     secondaryMuscles: [
       "gluteus maximus",
       "gluteus medius",
@@ -701,7 +701,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Chest Fly",
-    "Primary Muscles": ["pectoralis major"],
+    primaryMuscles: ["pectoralis major"],
     secondaryMuscles: ["biceps", "deltoid", "finger extensors"],
     type: "compound",
     workoutType: ["strength"],
@@ -711,7 +711,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Incline Chest Fly",
-    "Primary Muscles": ["pectoralis major"],
+    primaryMuscles: ["pectoralis major"],
     secondaryMuscles: ["biceps", "deltoid", "finger extensors"],
     type: "compound",
     workoutType: ["strength"],
@@ -721,7 +721,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Decline Chest Fly",
-    "Primary Muscles": ["pectoralis major"],
+    primaryMuscles: ["pectoralis major"],
     secondaryMuscles: ["biceps", "deltoid", "finger extensors"],
     type: "compound",
     workoutType: ["strength"],
@@ -731,7 +731,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Machine Chest Fly",
-    "Primary Muscles": ["pectoralis major"],
+    primaryMuscles: ["pectoralis major"],
     secondaryMuscles: ["biceps", "deltoid", "finger extensors"],
     type: "compound",
     workoutType: ["strength"],
@@ -741,7 +741,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Cable Chest Fly",
-    "Primary Muscles": ["pectoralis major"],
+    primaryMuscles: ["pectoralis major"],
     secondaryMuscles: ["biceps", "deltoid", "finger extensors"],
     type: "compound",
     workoutType: ["strength"],
@@ -751,7 +751,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Chest Dip",
-    "Primary Muscles": ["pectoralis major", "triceps"],
+    primaryMuscles: ["pectoralis major", "triceps"],
     secondaryMuscles: [
       "deltoid",
       "latissimus dorsi",
@@ -766,7 +766,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Bicep Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -781,7 +781,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Preacher Bicep Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -795,7 +795,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Bicep Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -810,7 +810,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Hammer Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -825,7 +825,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Reverse Curl",
-    "Primary Muscles": ["biceps"],
+    primaryMuscles: ["biceps"],
     secondaryMuscles: [
       "brachioradialis",
       "deltoid",
@@ -840,7 +840,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Plank",
-    "Primary Muscles": ["abdominals", "external oblique"],
+    primaryMuscles: ["abdominals", "external oblique"],
     secondaryMuscles: [
       "deltoid",
       "gluteus maximus",
@@ -856,7 +856,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Weighted Plank",
-    "Primary Muscles": ["abdominals", "external oblique"],
+    primaryMuscles: ["abdominals", "external oblique"],
     secondaryMuscles: [
       "deltoid",
       "gluteus maximus",
@@ -872,7 +872,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Mountain Climbers",
-    "Primary Muscles": ["abdominals"],
+    primaryMuscles: ["abdominals"],
     secondaryMuscles: [
       "deltoid",
       "gastrocnemius",
@@ -888,7 +888,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Overhead Tricep Extensions",
-    "Primary Muscles": ["triceps"],
+    primaryMuscles: ["triceps"],
     secondaryMuscles: ["deltoid", "finger extensors", "finger flexors"],
     type: "compound",
     workoutType: ["strength"],
@@ -898,7 +898,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Cable Overhead Tricep Extensions",
-    "Primary Muscles": ["triceps"],
+    primaryMuscles: ["triceps"],
     secondaryMuscles: [
       "deltoid",
       "finger extensors",
@@ -913,7 +913,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Tricep Kickbacks",
-    "Primary Muscles": ["triceps"],
+    primaryMuscles: ["triceps"],
     secondaryMuscles: [
       "deltoid",
       "finger extensors",
@@ -929,7 +929,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Cable Tricep Kickbacks",
-    "Primary Muscles": ["triceps"],
+    primaryMuscles: ["triceps"],
     secondaryMuscles: [
       "deltoid",
       "finger extensors",
@@ -946,7 +946,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Front Squat",
-    "Primary Muscles": ["quadriceps"],
+    primaryMuscles: ["quadriceps"],
     secondaryMuscles: [
       "abdominals",
       "external oblique",
@@ -965,7 +965,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Lunge",
-    "Primary Muscles": ["hamstrings", "quadriceps"],
+    primaryMuscles: ["hamstrings", "quadriceps"],
     secondaryMuscles: [
       "abductors",
       "gluteus maximus",
@@ -980,7 +980,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Lunge",
-    "Primary Muscles": ["hamstrings", "quadriceps"],
+    primaryMuscles: ["hamstrings", "quadriceps"],
     secondaryMuscles: [
       "abductors",
       "gluteus maximus",
@@ -995,7 +995,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Bulgarian Split Squat",
-    "Primary Muscles": ["hamstrings", "quadriceps"],
+    primaryMuscles: ["hamstrings", "quadriceps"],
     secondaryMuscles: [
       "abductors",
       "gluteus maximus",
@@ -1010,7 +1010,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Forward Lunge",
-    "Primary Muscles": ["gluteus maximus", "gluteus medius", "quadriceps"],
+    primaryMuscles: ["gluteus maximus", "gluteus medius", "quadriceps"],
     secondaryMuscles: ["sartorius"],
     type: "compound",
     workoutType: ["strength"],
@@ -1020,7 +1020,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Barbell Reverse Lunge",
-    "Primary Muscles": ["gluteus maximus", "gluteus medius", "quadriceps"],
+    primaryMuscles: ["gluteus maximus", "gluteus medius", "quadriceps"],
     secondaryMuscles: ["gastrocnemius", "sartorius"],
     type: "compound",
     workoutType: ["strength"],
@@ -1030,7 +1030,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Air Squat",
-    "Primary Muscles": ["gluteus maximus", "gluteus medius", "quadriceps"],
+    primaryMuscles: ["gluteus maximus", "gluteus medius", "quadriceps"],
     secondaryMuscles: ["gastrocnemius", "sartorius"],
     type: "compound",
     workoutType: ["plyometric", "strength"],
@@ -1040,7 +1040,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Chest Dip",
-    "Primary Muscles": ["pectoralis major", "triceps"],
+    primaryMuscles: ["pectoralis major", "triceps"],
     secondaryMuscles: [
       "deltoid",
       "latissimus dorsi",
@@ -1055,7 +1055,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Overhead Tricep Extensions",
-    "Primary Muscles": ["triceps"],
+    primaryMuscles: ["triceps"],
     secondaryMuscles: ["deltoid", "finger extensors", "finger flexors"],
     type: "compound",
     workoutType: ["strength"],
@@ -1065,7 +1065,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Cable Overhead Tricep Extensions",
-    "Primary Muscles": ["triceps"],
+    primaryMuscles: ["triceps"],
     secondaryMuscles: [
       "deltoid",
       "finger extensors",
@@ -1080,7 +1080,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Dumbbell Tricep Kickbacks",
-    "Primary Muscles": ["triceps"],
+    primaryMuscles: ["triceps"],
     secondaryMuscles: [
       "deltoid",
       "finger extensors",
@@ -1096,7 +1096,7 @@ const exerciseList = [
   {
     force: "push",
     name: "Cable Tricep Kickbacks",
-    "Primary Muscles": ["triceps"],
+    primaryMuscles: ["triceps"],
     secondaryMuscles: [
       "deltoid",
       "finger extensors",

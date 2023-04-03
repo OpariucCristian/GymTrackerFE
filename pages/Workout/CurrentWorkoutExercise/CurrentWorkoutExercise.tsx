@@ -53,7 +53,6 @@ const CurrentWorkoutExercise = ({
 
   const updateExercise = (isExerciseCompleted: boolean): void => {
     if (isExerciseCompleted) {
-      console.log("updates");
       const updatedSetsNumber = Number(updatedSets);
       const updatedWeightNumber = Number(updatedWeight);
       const updatedRepsNumber = Number(updatedReps);
