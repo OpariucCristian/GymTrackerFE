@@ -11,6 +11,7 @@ export default function App() {
     $textColor: "#0275d8",
     $lightGray: "#f2f2f2",
     $darkGray: "#d3d3d3",
+    $backgroundColor: "#2A2A31",
   });
   return (
     <>

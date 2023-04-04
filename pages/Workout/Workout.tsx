@@ -9,6 +9,7 @@ import {
   ImageBackground,
   Animated,
   GestureResponderEvent,
+  Image,
 } from "react-native";
 import ExerciseInputField from "./ExerciseInputField";
 import exerciseList from "../../constants/exerciseList";
@@ -16,13 +17,21 @@ import { TextInput, ScrollView, Swipeable } from "react-native-gesture-handler";
 import { Workout } from "../../models/workout-list-interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { generateUUID } from "../../utils/uuid";
-import { Box, Button, FlatList, Input, Text } from "native-base";
+import {
+  Box,
+  Button,
+  FlatList,
+  Input,
+  NativeBaseProvider,
+  Text,
+} from "native-base";
 import EStyleSheet from "react-native-extended-stylesheet";
-import { WORKOUTIMAGE2 } from "../../assets/workout-backgrounds/Images";
+import { getRandomWorkoutImage } from "../../assets/workout-backgrounds/Images";
 import CurrentWorkoutExercise from "./CurrentWorkoutExercise";
 import { WorkoutExercise } from "../../models/workout-exercise";
 import WorkoutTimer from "./WorkoutTimer/WorkoutTimer";
 import { api } from "../../api/api";
+import { theme } from "../../styles/theme";
 
 export function WorkoutPage() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -178,18 +187,29 @@ export function WorkoutPage() {
   };
 
   const handleSaveNewWorkout = () => {
+    setIsNewWorkoutModalVisible(false);
+
+    //TODO: fix this, new picture is not getting added
+
     if (newWorkout?.workoutExercises.length !== 0 && newWorkout) {
-      setWorkoutList([...workoutList, newWorkout]);
+      const randomImage = getRandomWorkoutImage();
+
+      const updatedNewWorkout = { ...newWorkout, image: randomImage };
+      console.log(randomImage);
+      setNewWorkout({
+        ...newWorkout,
+      });
+
+      setWorkoutList([...workoutList, updatedNewWorkout]);
     }
 
-    setIsNewWorkoutModalVisible(false);
     setNewWorkout(null);
     setNewWorkoutName("");
   };
 
   const handleOpenModal = () => {
-    setNewWorkout({ workoutId: generateUUID(), workoutExercises: [] });
     setIsNewWorkoutModalVisible(true);
+    setNewWorkout({ workoutId: generateUUID(), workoutExercises: [] });
   };
 
   const handleNewWorkoutNameChange = (newName: string) => {
@@ -234,7 +254,7 @@ export function WorkoutPage() {
       >
         <Button
           style={styles.deleteWorkoutCardButton}
-          colorScheme="secondary"
+          variant="secondary"
           onPress={(id) => handleDeleteWorkout(workoutId)}
         >
           X
@@ -245,16 +265,18 @@ export function WorkoutPage() {
 
   return (
     <>
-      <Box style={styles.newWorkoutButtonContainer}>
-        <Button
-          onPress={() => handleOpenModal()}
-          style={styles.newWorkoutButton}
-        >
-          New workout
-        </Button>
-      </Box>
+      <NativeBaseProvider theme={theme}>
+        <Box style={styles.newWorkoutButtonContainer}>
+          <Button
+            variant={"solid"}
+            onPress={() => handleOpenModal()}
+            style={styles.newWorkoutButton}
+          >
+            New workout
+          </Button>
+        </Box>
 
-      {/* Test button
+        {/* Test button
       <Button
         onPress={() =>
           api.post("/auth/signup", {
@@ -268,75 +290,89 @@ export function WorkoutPage() {
         Test BE
       </Button> */}
 
-      <ScrollView style={styles.workoutListContainer}>
-        {workoutList &&
-          workoutList?.map((workout, index) => {
-            const id = workout.workoutId || "";
-            return (
-              <Swipeable
-                friction={3}
-                overshootFriction={50}
-                overshootLeft={false}
-                renderRightActions={(progress, workoutId) =>
-                  renderRightActions(progress, id)
-                }
-                key={index}
-              >
-                <Box style={styles.workoutCard}>
-                  <ImageBackground
-                    source={WORKOUTIMAGE2}
-                    resizeMode="cover"
-                    style={styles.backgroundImage}
+        <ScrollView style={styles.workoutListContainer}>
+          <Box style={styles.workoutList}>
+            {workoutList &&
+              workoutList?.map((workout, index) => {
+                const id = workout.workoutId || "";
+                return (
+                  <Swipeable
+                    friction={3}
+                    overshootFriction={50}
+                    renderRightActions={(progress, workoutId) =>
+                      renderRightActions(progress, id)
+                    }
+                    key={index}
                   >
-                    <Box style={styles.workoutHeader}>
-                      <Text style={styles.workoutTitle}>{`${
-                        workout?.workoutName
-                          ? workout?.workoutName
-                          : `Workout ${index + 1}`
-                      }`}</Text>
-                      <Text>{newWorkoutName}</Text>
-                      <Button
-                        style={styles.startWorkoutButton}
-                        onPress={() => handleStartWorkout(id)}
-                      >{`Start`}</Button>
-                    </Box>
-
-                    <Box style={styles.exercisesContainer}>
-                      <ScrollView
-                        horizontal={true}
-                        style={styles.exercisesContainerScrollable}
+                    <Box style={styles.workoutCard}>
+                      <ImageBackground
+                        source={workout.image}
+                        resizeMode="cover"
+                        style={styles.backgroundImage}
                       >
-                        {workout
-                          ? workout?.workoutExercises.map(
-                              (exercise, exerciseIndex) => {
-                                return (
-                                  <Box
-                                    key={exerciseIndex}
-                                    style={styles.exerciseContainer}
-                                  >
-                                    <Text style={styles.workoutExerciseTitle}>
-                                      {exercise.exercise}
-                                    </Text>
-                                    <Text style={styles.workoutExerciseDetails}>
-                                      Sets: {exercise.sets}
-                                    </Text>
-                                    <Text style={styles.workoutExerciseDetails}>
-                                      Weight: {exercise.weight} kg {"\n"}
-                                    </Text>
-                                  </Box>
-                                );
-                              }
-                            )
-                          : null}
-                      </ScrollView>
+                        <View style={styles.darkness}>
+                          <Box style={styles.workoutHeader}>
+                            <Text style={styles.workoutTitle}>{`${
+                              workout?.workoutName
+                                ? workout?.workoutName
+                                : `Workout ${index + 1}`
+                            }`}</Text>
+                            <Text>{newWorkoutName}</Text>
+                            <Button
+                              variant={"solid"}
+                              style={styles.startWorkoutButton}
+                              onPress={() => handleStartWorkout(id)}
+                            >{`Start`}</Button>
+                          </Box>
+
+                          <Box style={styles.exercisesContainer}>
+                            <ScrollView
+                              horizontal={true}
+                              style={styles.exercisesContainerScrollable}
+                            >
+                              {workout
+                                ? workout?.workoutExercises.map(
+                                    (exercise, exerciseIndex) => {
+                                      return (
+                                        <Box
+                                          key={exerciseIndex}
+                                          style={styles.exerciseContainer}
+                                        >
+                                          <Text
+                                            style={styles.workoutExerciseTitle}
+                                          >
+                                            {exercise.exercise}
+                                          </Text>
+                                          <Text
+                                            style={
+                                              styles.workoutExerciseDetails
+                                            }
+                                          >
+                                            Sets: {exercise.sets}
+                                          </Text>
+                                          <Text
+                                            style={
+                                              styles.workoutExerciseDetails
+                                            }
+                                          >
+                                            Weight: {exercise.weight} kg {"\n"}
+                                          </Text>
+                                        </Box>
+                                      );
+                                    }
+                                  )
+                                : null}
+                            </ScrollView>
+                          </Box>
+                        </View>
+                      </ImageBackground>
                     </Box>
-                  </ImageBackground>
-                </Box>
-              </Swipeable>
-            );
-          })}
-      </ScrollView>
-      {/* <Box style={styles.navbar}>
+                  </Swipeable>
+                );
+              })}
+          </Box>
+        </ScrollView>
+        {/* <Box style={styles.navbar}>
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate("Profile", { id: 1 })}
         >
@@ -356,124 +392,135 @@ export function WorkoutPage() {
         </TouchableWithoutFeedback>
       </Box> */}
 
-      <Modal visible={isNewWorkoutModalVisible}>
-        <Box style={styles.newWorkoutModalHeaderContainer}>
-          {/* <Text style={styles.newWorkoutModalTitle}>Exercise list</Text> */}
-          <Box style={styles.newWoorkoutNameInputContainer}>
+        <Modal
+          animationType={"slide"}
+          style={styles.newWorkoutModal}
+          visible={isNewWorkoutModalVisible}
+        >
+          <Box style={styles.newWorkoutModalHeaderContainer}>
+            {/* <Text style={styles.newWorkoutModalTitle}>Exercise list</Text> */}
+            <Box style={styles.newWoorkoutNameInputContainer}>
+              <Input
+                placeholder="Workout name"
+                value={newWorkoutName}
+                onChangeText={(newName) => handleNewWorkoutNameChange(newName)}
+              />
+            </Box>
+
+            <Button
+              variant={"solid"}
+              style={styles.createNewWorkoutButton}
+              onPress={handleSaveNewWorkout}
+              isDisabled={newWorkout?.workoutExercises.length === 0}
+            >
+              Create new workout
+            </Button>
+          </Box>
+
+          <Box style={styles.newWorkoutNameInput}>
             <Input
-              placeholder="Workout name"
-              value={newWorkoutName}
-              onChangeText={(newName) => handleNewWorkoutNameChange(newName)}
+              placeholder="Seach for exercises"
+              value={newWorkoutNameSearch}
+              onChangeText={(searchQuery) =>
+                handleNewWorkoutNameSearchChange(searchQuery)
+              }
             />
           </Box>
 
-          <Button
-            style={styles.createNewWorkoutButton}
-            onPress={handleSaveNewWorkout}
-            isDisabled={newWorkout?.workoutExercises.length === 0}
-            colorScheme="success"
-          >
-            Create new workout
-          </Button>
-        </Box>
+          {!newWorkoutNameSearch ? (
+            <FlatList
+              data={exerciseListMemo}
+              renderItem={({ item, index }) => (
+                <ExerciseInputField
+                  key={index}
+                  name={item.name}
+                  handleAddExercise={handleAddExercise}
+                  workoutId={newWorkout?.workoutId || ""}
+                  youtubeLink={item.youtubeLink}
+                />
+              )}
+            ></FlatList>
+          ) : (
+            <FlatList
+              data={exerciseListMemo.filter((exercise) => {
+                return exercise.name
+                  .toLowerCase()
+                  .includes(newWorkoutNameSearch.toLowerCase());
+              })}
+              renderItem={({ item, index }) => (
+                <ExerciseInputField
+                  key={index}
+                  name={item.name}
+                  handleAddExercise={handleAddExercise}
+                  workoutId={newWorkout?.workoutId || ""}
+                  youtubeLink={item.youtubeLink}
+                />
+              )}
+            ></FlatList>
+          )}
 
-        <Box style={styles.newWorkoutNameInput}>
-          <Input
-            placeholder="Seach for exercises"
-            value={newWorkoutNameSearch}
-            onChangeText={(searchQuery) =>
-              handleNewWorkoutNameSearchChange(searchQuery)
-            }
+          <Button
+            style={styles.exitNewWorkoutModalButton}
+            onPress={handleExitNewWorkoutModal}
+            variant="secondary"
+          >
+            X Exit
+          </Button>
+        </Modal>
+
+        <Modal animationType={"slide"} visible={isWorkoutModalVisible}>
+          <Box style={styles.currentWorkoutInfo}>
+            <Text style={styles.currentWorkoutModalTitle}>
+              {currentWorkout?.workoutName}
+            </Text>
+            <WorkoutTimer />
+          </Box>
+
+          <FlatList
+            data={currentWorkout?.workoutExercises}
+            renderItem={({ item, index }) => (
+              <CurrentWorkoutExercise
+                sets={item.sets}
+                weight={item.weight}
+                exercise={item.exercise}
+                reps={item.reps}
+                key={index}
+                workoutId={item.workoutId}
+                exerciseId={item.exerciseId}
+                handleUpdateExercise={handleUpdateExercise}
+              />
+            )}
           />
-        </Box>
 
-        {!newWorkoutNameSearch ? (
-          <FlatList
-            data={exerciseListMemo}
-            renderItem={({ item, index }) => (
-              <ExerciseInputField
-                key={index}
-                name={item.name}
-                handleAddExercise={handleAddExercise}
-                workoutId={newWorkout?.workoutId || ""}
-                youtubeLink={item.youtubeLink}
-              />
-            )}
-          ></FlatList>
-        ) : (
-          <FlatList
-            data={exerciseListMemo.filter((exercise) => {
-              return exercise.name
-                .toLowerCase()
-                .includes(newWorkoutNameSearch.toLowerCase());
-            })}
-            renderItem={({ item, index }) => (
-              <ExerciseInputField
-                key={index}
-                name={item.name}
-                handleAddExercise={handleAddExercise}
-                workoutId={newWorkout?.workoutId || ""}
-                youtubeLink={item.youtubeLink}
-              />
-            )}
-          ></FlatList>
-        )}
+          <Box style={styles.currentWorkoutButtonsContainer}>
+            <Button variant="secondary" onPress={handleExitWorkoutModal}>
+              Exit workout
+            </Button>
 
-        <Button
-          style={styles.exitNewWorkoutModalButton}
-          onPress={handleExitNewWorkoutModal}
-        >
-          X Exit
-        </Button>
-      </Modal>
-
-      <Modal visible={isWorkoutModalVisible}>
-        <Box style={styles.currentWorkoutInfo}>
-          <Text style={styles.currentWorkoutModalTitle}>
-            {currentWorkout?.workoutName}
-          </Text>
-          <WorkoutTimer />
-        </Box>
-        {currentWorkout?.workoutExercises.map((exerciseItem, exerciseIndex) => {
-          const { sets, weight, exercise, reps, workoutId, exerciseId } =
-            exerciseItem;
-          return (
-            <CurrentWorkoutExercise
-              sets={sets}
-              weight={weight}
-              exercise={exercise}
-              reps={reps}
-              key={exerciseIndex}
-              workoutId={workoutId}
-              exerciseId={exerciseId}
-              handleUpdateExercise={handleUpdateExercise}
-            />
-          );
-        })}
-        <Box style={styles.currentWorkoutButtonsContainer}>
-          <Button colorScheme={"secondary"} onPress={handleExitWorkoutModal}>
-            Exit workout
-          </Button>
-
-          <Button
-            isDisabled={isWorkoutNotFinished()}
-            onPress={handleFinishWorkout}
-          >
-            Finish workout
-          </Button>
-        </Box>
-      </Modal>
+            <Button
+              variant="solid"
+              isDisabled={isWorkoutNotFinished()}
+              onPress={handleFinishWorkout}
+            >
+              Finish workout
+            </Button>
+          </Box>
+        </Modal>
+      </NativeBaseProvider>
     </>
   );
 }
 
 const styles = EStyleSheet.create({
   workoutListContainer: {
+    backgroundColor: "$backgroundColor",
+  },
+  workoutList: {
     marginBottom: "10%",
   },
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -492,6 +539,7 @@ const styles = EStyleSheet.create({
   newWorkoutButtonContainer: {
     display: "flex",
     justifyContent: "center",
+    backgroundColor: "$backgroundColor",
     alignItems: "center",
     width: "100%",
   },
@@ -563,9 +611,14 @@ const styles = EStyleSheet.create({
     height: "11rem",
     borderRadius: 10,
   },
+  darkness: {
+    backgroundColor: "rgba(0,0,0,0.15)",
+    width: "100%",
+    height: 200,
+  },
   deleteWorkoutCardButton: {
     right: "25%",
-    height: "78%",
+    height: "10.8rem",
     marginTop: "60%",
     zIndex: 1,
   },
@@ -625,6 +678,10 @@ const styles = EStyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: "35%",
+  },
+  newWorkoutModal: {
+    height: "50%",
+    width: "80%",
   },
 });
 
