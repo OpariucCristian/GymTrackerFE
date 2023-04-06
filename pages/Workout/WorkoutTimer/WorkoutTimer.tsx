@@ -2,7 +2,7 @@ import { Box, Text } from "native-base";
 import React, { useEffect, useState } from "react";
 import EStyleSheet from "react-native-extended-stylesheet";
 
-const WorkoutTimer = () => {
+const WorkoutTimer = ({ startFromSeconds }: { startFromSeconds?: number }) => {
   const [seconds, setSeconds] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [hours, setHours] = useState(0);
@@ -24,6 +24,17 @@ const WorkoutTimer = () => {
     handleMinutePassed();
     return () => clearInterval(interval);
   }, [seconds]);
+
+  useEffect(() => {
+    if (startFromSeconds) {
+      const hours = Math.floor(startFromSeconds / 3600);
+      const minutes = Math.floor((startFromSeconds - hours * 3600) / 60);
+      const seconds = startFromSeconds - hours * 3600 - minutes * 60;
+      setHours(hours);
+      setMinutes(minutes);
+      setSeconds(seconds);
+    }
+  }, []);
 
   return (
     <Box>

@@ -1,16 +1,7 @@
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { RootStackParamList } from "../../models/root-stack-param-list";
-import {
-  View,
-  Modal,
-  Pressable,
-  TouchableWithoutFeedback,
-  ImageBackground,
-  Animated,
-  GestureResponderEvent,
-  Image,
-} from "react-native";
+import { View, ImageBackground, Animated } from "react-native";
 import ExerciseInputField from "./ExerciseInputField";
 import exerciseList from "../../constants/exerciseList";
 import { TextInput, ScrollView, Swipeable } from "react-native-gesture-handler";
@@ -24,6 +15,7 @@ import {
   Input,
   NativeBaseProvider,
   Text,
+  Modal,
 } from "native-base";
 import EStyleSheet from "react-native-extended-stylesheet";
 import { getRandomWorkoutImage } from "../../assets/workout-backgrounds/Images";
@@ -32,6 +24,8 @@ import { WorkoutExercise } from "../../models/workout-exercise";
 import WorkoutTimer from "./WorkoutTimer/WorkoutTimer";
 import { api } from "../../api/api";
 import { theme } from "../../styles/theme";
+import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
+import useToggle from "../../hooks/toogle-hook";
 
 export function WorkoutPage() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -40,14 +34,23 @@ export function WorkoutPage() {
 
   const [newWorkout, setNewWorkout] = useState<Workout | null>();
   const [newWorkoutName, setNewWorkoutName] = useState<string>("");
-  const [isNewWorkoutModalVisible, setIsNewWorkoutModalVisible] =
-    useState<boolean>(false);
+  const [
+    isNewWorkoutModalVisible,
+    toggleIsNewWorkoutModalVisible,
+    setIsNewWorkoutModalVisible,
+  ] = useToggle(false);
+
   const [newWorkoutNameSearch, setNewWorkoutNameSearch] = useState<string>("");
 
   const [currentWorkout, setCurrentWorkout] = useState<Workout>();
 
-  const [isWorkoutModalVisible, setIsWorkoutModalVisible] =
-    useState<boolean>(false);
+  const [isWorkoutModalVisible, , setIsWorkoutModalVisible] = useToggle(false);
+
+  const [isExerciseListModalOpen, toggleExerciseListModalOpen] =
+    useToggle(false);
+
+  const [workoutTimerSecondsStart, setWorkoutTimerSecondsStart] =
+    useState<number>(0);
 
   const exerciseListMemo = React.useMemo(() => exerciseList, []);
 
@@ -164,10 +167,6 @@ export function WorkoutPage() {
     setIsWorkoutModalVisible(false);
   };
 
-  const handleExitWorkoutModal = () => {
-    setIsWorkoutModalVisible(false);
-  };
-
   const handleDeleteWorkout = async (workoutId: string) => {
     const newWorkoutList = workoutList.filter((workout) => {
       return workout.workoutId !== workoutId;
@@ -181,15 +180,14 @@ export function WorkoutPage() {
   };
 
   const handleExitNewWorkoutModal = () => {
-    setIsNewWorkoutModalVisible(false);
     setNewWorkout(null);
+    setWorkoutTimerSecondsStart(0);
     setNewWorkoutName("");
+    setIsNewWorkoutModalVisible(false);
   };
 
   const handleSaveNewWorkout = () => {
     setIsNewWorkoutModalVisible(false);
-
-    //TODO: fix this, new picture is not getting added
 
     if (newWorkout?.workoutExercises.length !== 0 && newWorkout) {
       const randomImage = getRandomWorkoutImage();
@@ -199,7 +197,6 @@ export function WorkoutPage() {
       setNewWorkout({
         ...newWorkout,
       });
-
       setWorkoutList([...workoutList, updatedNewWorkout]);
     }
 
@@ -372,103 +369,124 @@ export function WorkoutPage() {
               })}
           </Box>
         </ScrollView>
-        {/* <Box style={styles.navbar}>
-        <TouchableWithoutFeedback
-          onPress={() => navigation.navigate("Profile", { id: 1 })}
-        >
-          <Text>Profile</Text>
-        </TouchableWithoutFeedback>
 
-        <TouchableWithoutFeedback
-          onPress={() => navigation.navigate("Workout", { id: 1 })}
-        >
-          <Text>Start Workout</Text>
-        </TouchableWithoutFeedback>
+        {isNewWorkoutModalVisible && (
+          <Modal
+            animationPreset={"slide"}
+            style={styles.newWorkoutModal}
+            isOpen={isNewWorkoutModalVisible}
+          >
+            <Box style={styles.newWorkoutModalHeaderContainer}>
+              {/* <Text style={styles.newWorkoutModalTitle}>Exercise list</Text> */}
+              <Box style={styles.newWorkoutNameInputContainer}>
+                <Input
+                  placeholder="Workout name"
+                  value={newWorkoutName}
+                  onChangeText={(newName) =>
+                    handleNewWorkoutNameChange(newName)
+                  }
+                />
+              </Box>
 
-        <TouchableWithoutFeedback
-          onPress={() => navigation.navigate("Exercises", { id: 1 })}
-        >
-          <Text>Exercises</Text>
-        </TouchableWithoutFeedback>
-      </Box> */}
-
-        <Modal
-          animationType={"slide"}
-          style={styles.newWorkoutModal}
-          visible={isNewWorkoutModalVisible}
-        >
-          <Box style={styles.newWorkoutModalHeaderContainer}>
-            {/* <Text style={styles.newWorkoutModalTitle}>Exercise list</Text> */}
-            <Box style={styles.newWoorkoutNameInputContainer}>
-              <Input
-                placeholder="Workout name"
-                value={newWorkoutName}
-                onChangeText={(newName) => handleNewWorkoutNameChange(newName)}
-              />
+              <Button
+                variant={"solid"}
+                style={styles.createNewWorkoutButton}
+                onPress={handleSaveNewWorkout}
+                isDisabled={newWorkout?.workoutExercises.length === 0}
+              >
+                Finish Workout
+              </Button>
             </Box>
 
-            <Button
-              variant={"solid"}
-              style={styles.createNewWorkoutButton}
-              onPress={handleSaveNewWorkout}
-              isDisabled={newWorkout?.workoutExercises.length === 0}
+            <CountdownCircleTimer
+              size={100}
+              isPlaying
+              duration={0}
+              colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
+              colorsTime={[7, 5, 2, 0]}
             >
-              Create new workout
+              {({ remainingTime }: any) => <Text>{remainingTime}</Text>}
+            </CountdownCircleTimer>
+            <WorkoutTimer startFromSeconds={workoutTimerSecondsStart} />
+
+            <Button onPress={() => toggleExerciseListModalOpen()}>
+              Add new exercise
             </Button>
-          </Box>
+            <Box>
+              <FlatList
+                data={newWorkout?.workoutExercises}
+                renderItem={({ item, index }) => (
+                  <CurrentWorkoutExercise
+                    sets={item.sets}
+                    weight={item.weight}
+                    exercise={item.exercise}
+                    reps={item.reps}
+                    key={index}
+                    workoutId={item.workoutId}
+                    exerciseId={item.exerciseId}
+                    handleUpdateExercise={handleUpdateExercise}
+                  />
+                )}
+              />
+            </Box>
+            <Modal
+              isOpen={isExerciseListModalOpen}
+              style={styles.exerciseListModal}
+            >
+              <Modal.CloseButton
+                onPress={() => toggleExerciseListModalOpen()}
+              ></Modal.CloseButton>
+              <Input
+                placeholder="Seach for exercises"
+                value={newWorkoutNameSearch}
+                onChangeText={(searchQuery) =>
+                  handleNewWorkoutNameSearchChange(searchQuery)
+                }
+              />
 
-          <Box style={styles.newWorkoutNameInput}>
-            <Input
-              placeholder="Seach for exercises"
-              value={newWorkoutNameSearch}
-              onChangeText={(searchQuery) =>
-                handleNewWorkoutNameSearchChange(searchQuery)
-              }
-            />
-          </Box>
-
-          {!newWorkoutNameSearch ? (
-            <FlatList
-              data={exerciseListMemo}
-              renderItem={({ item, index }) => (
-                <ExerciseInputField
-                  key={index}
-                  name={item.name}
-                  handleAddExercise={handleAddExercise}
-                  workoutId={newWorkout?.workoutId || ""}
-                  youtubeLink={item.youtubeLink}
-                />
+              {!newWorkoutNameSearch ? (
+                <FlatList
+                  data={exerciseListMemo}
+                  renderItem={({ item, index }) => (
+                    <ExerciseInputField
+                      key={index}
+                      name={item.name}
+                      handleAddExercise={handleAddExercise}
+                      workoutId={newWorkout?.workoutId || ""}
+                      youtubeLink={item.youtubeLink}
+                    />
+                  )}
+                ></FlatList>
+              ) : (
+                <FlatList
+                  data={exerciseListMemo.filter((exercise) => {
+                    return exercise.name
+                      .toLowerCase()
+                      .includes(newWorkoutNameSearch.toLowerCase());
+                  })}
+                  renderItem={({ item, index }) => (
+                    <ExerciseInputField
+                      key={index}
+                      name={item.name}
+                      handleAddExercise={handleAddExercise}
+                      workoutId={newWorkout?.workoutId || ""}
+                      youtubeLink={item.youtubeLink}
+                    />
+                  )}
+                ></FlatList>
               )}
-            ></FlatList>
-          ) : (
-            <FlatList
-              data={exerciseListMemo.filter((exercise) => {
-                return exercise.name
-                  .toLowerCase()
-                  .includes(newWorkoutNameSearch.toLowerCase());
-              })}
-              renderItem={({ item, index }) => (
-                <ExerciseInputField
-                  key={index}
-                  name={item.name}
-                  handleAddExercise={handleAddExercise}
-                  workoutId={newWorkout?.workoutId || ""}
-                  youtubeLink={item.youtubeLink}
-                />
-              )}
-            ></FlatList>
-          )}
+            </Modal>
+            <Button
+              style={styles.exitNewWorkoutModalButton}
+              onPress={handleExitNewWorkoutModal}
+              variant="secondary"
+            >
+              X Exit
+            </Button>
+          </Modal>
+        )}
 
-          <Button
-            style={styles.exitNewWorkoutModalButton}
-            onPress={handleExitNewWorkoutModal}
-            variant="secondary"
-          >
-            X Exit
-          </Button>
-        </Modal>
-
-        <Modal animationType={"slide"} visible={isWorkoutModalVisible}>
+        <Modal animationPreset={"slide"} isOpen={isWorkoutModalVisible}>
           <Box style={styles.currentWorkoutInfo}>
             <Text style={styles.currentWorkoutModalTitle}>
               {currentWorkout?.workoutName}
@@ -493,7 +511,10 @@ export function WorkoutPage() {
           />
 
           <Box style={styles.currentWorkoutButtonsContainer}>
-            <Button variant="secondary" onPress={handleExitWorkoutModal}>
+            <Button
+              variant="secondary"
+              onPress={toggleIsNewWorkoutModalVisible}
+            >
               Exit workout
             </Button>
 
@@ -665,23 +686,30 @@ const styles = EStyleSheet.create({
   newWorkoutModalTitle: {
     width: "60%",
   },
-  newWorkoutNameInput: {
-    width: "90%",
-    paddingBottom: "3%",
-    alignSelf: "center",
-  },
   newExerciseInputFields: {
     marginTop: "5%",
   },
-  newWoorkoutNameInputContainer: {
+  newWorkoutNameInputContainer: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     width: "35%",
   },
   newWorkoutModal: {
-    height: "50%",
-    width: "80%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "100%",
+    width: "100%",
+    backgroundColor: "$backgroundColor",
+  },
+  exerciseListModal: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "100%",
+    width: "100%",
+    backgroundColor: "$backgroundColor",
   },
 });
 
