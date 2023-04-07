@@ -52,6 +52,10 @@ export function WorkoutPage() {
   const [workoutTimerSecondsStart, setWorkoutTimerSecondsStart] =
     useState<number>(0);
 
+  const [workoutUserTimerSeconds, setWorkoutUserTimerSeconds] =
+    useState<number>(0);
+  const [workoutUserTimerKey, setWorkoutUserTimerKey] = useState<number>(0);
+
   const exerciseListMemo = React.useMemo(() => exerciseList, []);
 
   const updateLocalStorage = async () => {
@@ -260,6 +264,11 @@ export function WorkoutPage() {
     );
   };
 
+  const handleAddSecondsUserTimer = (seconds: number) => {
+    setWorkoutUserTimerSeconds(seconds);
+    setWorkoutUserTimerKey((prevKey) => prevKey + 1);
+  };
+
   return (
     <>
       <NativeBaseProvider theme={theme}>
@@ -399,17 +408,54 @@ export function WorkoutPage() {
             </Box>
 
             <CountdownCircleTimer
-              size={100}
-              isPlaying
-              duration={0}
-              colors={["#004777", "#F7B801", "#A30000", "#A30000"]}
-              colorsTime={[7, 5, 2, 0]}
+              size={200}
+              key={workoutUserTimerKey}
+              isPlaying={!!workoutUserTimerSeconds}
+              duration={workoutUserTimerSeconds}
+              colors={["#e73213", "#8c200e", "#9dbeb7", "#7f9993"]}
+              colorsTime={[
+                workoutUserTimerSeconds / 1.5,
+                workoutUserTimerSeconds / 2,
+                workoutUserTimerSeconds / 4,
+                0,
+              ]}
             >
-              {({ remainingTime }: any) => <Text>{remainingTime}</Text>}
+              {({ remainingTime }: any) => {
+                return remainingTime ? (
+                  <Text style={styles.timerText}>{remainingTime}</Text>
+                ) : (
+                  <React.Fragment>
+                    <Button
+                      variant="ghost"
+                      onPress={() => handleAddSecondsUserTimer(15)}
+                    >
+                      00:15
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onPress={() => handleAddSecondsUserTimer(30)}
+                    >
+                      00:30
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onPress={() => handleAddSecondsUserTimer(60)}
+                    >
+                      01:00
+                    </Button>
+                  </React.Fragment>
+                );
+              }}
             </CountdownCircleTimer>
-            <WorkoutTimer startFromSeconds={workoutTimerSecondsStart} />
 
-            <Button onPress={() => toggleExerciseListModalOpen()}>
+            <Box style={styles.workoutTimerContainer}>
+              <WorkoutTimer startFromSeconds={workoutTimerSecondsStart} />
+            </Box>
+
+            <Button
+              style={styles.newWorkoutNewExerciseButton}
+              onPress={() => toggleExerciseListModalOpen()}
+            >
               Add new exercise
             </Button>
             <Box>
@@ -436,45 +482,50 @@ export function WorkoutPage() {
               <Modal.CloseButton
                 onPress={() => toggleExerciseListModalOpen()}
               ></Modal.CloseButton>
-              <Input
-                placeholder="Seach for exercises"
-                value={newWorkoutNameSearch}
-                onChangeText={(searchQuery) =>
-                  handleNewWorkoutNameSearchChange(searchQuery)
-                }
-              />
+              <Box style={styles.exerciseListModalContentContainer}>
+                <Box style={styles.searchForExerciseInputContainer}>
+                  <Input
+                    style={styles.searchForExerciseInput}
+                    placeholder="Seach for exercises"
+                    value={newWorkoutNameSearch}
+                    onChangeText={(searchQuery) =>
+                      handleNewWorkoutNameSearchChange(searchQuery)
+                    }
+                  />
+                </Box>
 
-              {!newWorkoutNameSearch ? (
-                <FlatList
-                  data={exerciseListMemo}
-                  renderItem={({ item, index }) => (
-                    <ExerciseInputField
-                      key={index}
-                      name={item.name}
-                      handleAddExercise={handleAddExercise}
-                      workoutId={newWorkout?.workoutId || ""}
-                      youtubeLink={item.youtubeLink}
-                    />
-                  )}
-                ></FlatList>
-              ) : (
-                <FlatList
-                  data={exerciseListMemo.filter((exercise) => {
-                    return exercise.name
-                      .toLowerCase()
-                      .includes(newWorkoutNameSearch.toLowerCase());
-                  })}
-                  renderItem={({ item, index }) => (
-                    <ExerciseInputField
-                      key={index}
-                      name={item.name}
-                      handleAddExercise={handleAddExercise}
-                      workoutId={newWorkout?.workoutId || ""}
-                      youtubeLink={item.youtubeLink}
-                    />
-                  )}
-                ></FlatList>
-              )}
+                {!newWorkoutNameSearch ? (
+                  <FlatList
+                    data={exerciseListMemo}
+                    renderItem={({ item, index }) => (
+                      <ExerciseInputField
+                        key={index}
+                        name={item.name}
+                        handleAddExercise={handleAddExercise}
+                        workoutId={newWorkout?.workoutId || ""}
+                        youtubeLink={item.youtubeLink}
+                      />
+                    )}
+                  ></FlatList>
+                ) : (
+                  <FlatList
+                    data={exerciseListMemo.filter((exercise) => {
+                      return exercise.name
+                        .toLowerCase()
+                        .includes(newWorkoutNameSearch.toLowerCase());
+                    })}
+                    renderItem={({ item, index }) => (
+                      <ExerciseInputField
+                        key={index}
+                        name={item.name}
+                        handleAddExercise={handleAddExercise}
+                        workoutId={newWorkout?.workoutId || ""}
+                        youtubeLink={item.youtubeLink}
+                      />
+                    )}
+                  ></FlatList>
+                )}
+              </Box>
             </Modal>
             <Button
               style={styles.exitNewWorkoutModalButton}
@@ -705,11 +756,35 @@ const styles = EStyleSheet.create({
   },
   exerciseListModal: {
     display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
+    // justifyContent: "space-between",
+    // alignItems: "center",
     height: "100%",
     width: "100%",
     backgroundColor: "$backgroundColor",
+  },
+  exerciseListModalContentContainer: {
+    width: "100%",
+    height: "85%",
+    gap: "10%",
+  },
+  searchForExerciseInputContainer: {
+    width: "80%",
+    alignSelf: "center",
+  },
+  searchForExerciseInput: {
+    color: "white",
+  },
+  newWorkoutNewExerciseButton: {
+    marginTop: "5%",
+    width: "40%",
+  },
+  timerText: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: "$darkGray",
+  },
+  workoutTimerContainer: {
+    marginTop: "3%",
   },
 });
 
