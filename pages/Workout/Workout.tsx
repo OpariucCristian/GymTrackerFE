@@ -293,7 +293,7 @@ export function WorkoutPage() {
         <ScrollView style={styles.workoutListContainer}>
           <Box>
             {workoutList.length !== 0 &&
-              workoutList?.map((workout, index) => {
+              workoutList?.reverse().map((workout, index) => {
                 const id = workout.workoutId || "";
                 return (
                   <Swipeable
