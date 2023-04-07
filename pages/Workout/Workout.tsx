@@ -1,16 +1,7 @@
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { RootStackParamList } from "../../models/root-stack-param-list";
-import {
-  View,
-  Modal,
-  Pressable,
-  TouchableWithoutFeedback,
-  ImageBackground,
-  Animated,
-  GestureResponderEvent,
-  Image,
-} from "react-native";
+import { View, ImageBackground, Animated } from "react-native";
 import ExerciseInputField from "./ExerciseInputField";
 import exerciseList from "../../constants/exerciseList";
 import { TextInput, ScrollView, Swipeable } from "react-native-gesture-handler";
@@ -24,6 +15,7 @@ import {
   Input,
   NativeBaseProvider,
   Text,
+  Modal,
 } from "native-base";
 import EStyleSheet from "react-native-extended-stylesheet";
 import { getRandomWorkoutImage } from "../../assets/workout-backgrounds/Images";
@@ -32,6 +24,8 @@ import { WorkoutExercise } from "../../models/workout-exercise";
 import WorkoutTimer from "./WorkoutTimer/WorkoutTimer";
 import { api } from "../../api/api";
 import { theme } from "../../styles/theme";
+import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
+import useToggle from "../../hooks/toogle-hook";
 
 export function WorkoutPage() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -40,14 +34,27 @@ export function WorkoutPage() {
 
   const [newWorkout, setNewWorkout] = useState<Workout | null>();
   const [newWorkoutName, setNewWorkoutName] = useState<string>("");
-  const [isNewWorkoutModalVisible, setIsNewWorkoutModalVisible] =
-    useState<boolean>(false);
+  const [
+    isNewWorkoutModalVisible,
+    toggleIsNewWorkoutModalVisible,
+    setIsNewWorkoutModalVisible,
+  ] = useToggle(false);
+
   const [newWorkoutNameSearch, setNewWorkoutNameSearch] = useState<string>("");
 
   const [currentWorkout, setCurrentWorkout] = useState<Workout>();
 
-  const [isWorkoutModalVisible, setIsWorkoutModalVisible] =
-    useState<boolean>(false);
+  const [isWorkoutModalVisible, , setIsWorkoutModalVisible] = useToggle(false);
+
+  const [isExerciseListModalOpen, toggleExerciseListModalOpen] =
+    useToggle(false);
+
+  const [workoutTimerSecondsStart, setWorkoutTimerSecondsStart] =
+    useState<number>(0);
+
+  const [workoutUserTimerSeconds, setWorkoutUserTimerSeconds] =
+    useState<number>(0);
+  const [workoutUserTimerKey, setWorkoutUserTimerKey] = useState<number>(0);
 
   const exerciseListMemo = React.useMemo(() => exerciseList, []);
 
@@ -163,10 +170,6 @@ export function WorkoutPage() {
     setIsWorkoutModalVisible(false);
   };
 
-  const handleExitWorkoutModal = () => {
-    setIsWorkoutModalVisible(false);
-  };
-
   const handleDeleteWorkout = async (workoutId: string) => {
     const newWorkoutList = workoutList.filter((workout) => {
       return workout.workoutId !== workoutId;
@@ -180,17 +183,15 @@ export function WorkoutPage() {
   };
 
   const handleExitNewWorkoutModal = () => {
-    setIsNewWorkoutModalVisible(false);
     setNewWorkout(null);
     setWorkoutTimerSecondsStart(0);
     handleAddSecondsUserTimer(0);
     setNewWorkoutName("");
+    setIsNewWorkoutModalVisible(false);
   };
 
   const handleSaveNewWorkout = () => {
     setIsNewWorkoutModalVisible(false);
-
-    //TODO: fix this, new picture is not getting added
 
     if (newWorkout?.workoutExercises.length !== 0 && newWorkout) {
       const randomImage = getRandomWorkoutImage();
@@ -262,6 +263,11 @@ export function WorkoutPage() {
         </Button>
       </Box>
     );
+  };
+
+  const handleAddSecondsUserTimer = (seconds: number) => {
+    setWorkoutUserTimerSeconds(seconds);
+    setWorkoutUserTimerKey((prevKey) => prevKey + 1);
   };
 
   return (
@@ -370,25 +376,6 @@ export function WorkoutPage() {
               })}
           </Box>
         </ScrollView>
-        {/* <Box style={styles.navbar}>
-        <TouchableWithoutFeedback
-          onPress={() => navigation.navigate("Profile", { id: 1 })}
-        >
-          <Text>Profile</Text>
-        </TouchableWithoutFeedback>
-
-        <TouchableWithoutFeedback
-          onPress={() => navigation.navigate("Workout", { id: 1 })}
-        >
-          <Text>Start Workout</Text>
-        </TouchableWithoutFeedback>
-
-        <TouchableWithoutFeedback
-          onPress={() => navigation.navigate("Exercises", { id: 1 })}
-        >
-          <Text>Exercises</Text>
-        </TouchableWithoutFeedback>
-      </Box> */}
 
         {isNewWorkoutModalVisible && (
           <Modal
@@ -556,7 +543,7 @@ export function WorkoutPage() {
           </Modal>
         )}
 
-        <Modal animationType={"slide"} visible={isWorkoutModalVisible}>
+        <Modal animationPreset={"slide"} isOpen={isWorkoutModalVisible}>
           <Box style={styles.currentWorkoutInfo}>
             <Text style={styles.currentWorkoutModalTitle}>
               {currentWorkout?.workoutName}
@@ -581,7 +568,10 @@ export function WorkoutPage() {
           />
 
           <Box style={styles.currentWorkoutButtonsContainer}>
-            <Button variant="secondary" onPress={handleExitWorkoutModal}>
+            <Button
+              variant="secondary"
+              onPress={toggleIsNewWorkoutModalVisible}
+            >
               Exit workout
             </Button>
 
@@ -780,15 +770,10 @@ const styles = EStyleSheet.create({
   newWorkoutModalTitle: {
     width: "60%",
   },
-  newWorkoutNameInput: {
-    width: "90%",
-    paddingBottom: "3%",
-    alignSelf: "center",
-  },
   newExerciseInputFields: {
     marginTop: "5%",
   },
-  newWoorkoutNameInputContainer: {
+  newWorkoutNameInputContainer: {
     display: "flex",
     gap: "-1rem",
     width: "50%",
@@ -799,7 +784,27 @@ const styles = EStyleSheet.create({
     fontWeight: "bold",
   },
   newWorkoutModal: {
-    height: "50%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "100%",
+    width: "100%",
+    backgroundColor: "$backgroundColor",
+  },
+  exerciseListModal: {
+    display: "flex",
+    // justifyContent: "space-between",
+    // alignItems: "center",
+    height: "100%",
+    width: "100%",
+    backgroundColor: "$backgroundColor",
+  },
+  exerciseListModalContentContainer: {
+    width: "100%",
+    height: "85%",
+    gap: "10%",
+  },
+  searchForExerciseInputContainer: {
     width: "80%",
     alignSelf: "center",
   },
