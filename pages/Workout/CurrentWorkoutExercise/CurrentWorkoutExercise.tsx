@@ -86,10 +86,10 @@ const CurrentWorkoutExercise = ({
   return (
     <React.Fragment>
       <Box style={styles.exerciseContainer}>
-        <Text>{exercise}</Text>
+        <Text style={styles.exerciseName}>{exercise}</Text>
         <Box style={styles.exerciseControlsContainer}>
           <Box>
-            <Text>Sets:</Text>
+            <Text style={styles.exerciseControlText}>Sets:</Text>
             <Input
               isDisabled={isChecked}
               size={"sm"}
@@ -102,7 +102,7 @@ const CurrentWorkoutExercise = ({
           </Box>
 
           <Box>
-            <Text>Weight:</Text>
+            <Text style={styles.exerciseControlText}>Weight:</Text>
             <Input
               isDisabled={isChecked}
               size={"sm"}
@@ -115,7 +115,7 @@ const CurrentWorkoutExercise = ({
           </Box>
 
           <Box>
-            <Text>Reps:</Text>
+            <Text style={styles.exerciseControlText}>Reps:</Text>
             <Input
               isDisabled={isChecked}
               size={"sm"}
@@ -143,12 +143,13 @@ const CurrentWorkoutExercise = ({
 
 const styles = EStyleSheet.create({
   exerciseContainer: {
-    backgroundColor: "#fff",
+    color: "white",
     padding: 10,
     margin: 10,
     marginTop: 20,
     borderRadius: 10,
     shadowColor: "#000",
+    width: "90%",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -160,6 +161,21 @@ const styles = EStyleSheet.create({
   exerciseControlsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginTop: 5,
+  },
+  exerciseName: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: "white",
+  },
+  exerciseControlText: {
+    color: "white",
+    fontWeight: "600",
+  },
+  inputField: {
+    color: "white",
+    fontWeight: "600",
+    textAlign: "center",
   },
 });
 

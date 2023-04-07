@@ -14,6 +14,5 @@ const WORKOUTIMAGES = [
 
 export const getRandomWorkoutImage = () => {
   const randomIndex = Math.floor(Math.random() * WORKOUTIMAGES.length);
-  console.log(WORKOUTIMAGES);
   return WORKOUTIMAGES[randomIndex];
 };

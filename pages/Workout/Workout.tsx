@@ -92,7 +92,6 @@ export function WorkoutPage() {
       setNewWorkout({
         ...newWorkout,
         workoutId,
-        workoutName: newWorkoutName || `Workout ${workoutList.length + 1}`,
         workoutExercises: [...newWorkout.workoutExercises, newExercise],
       });
     }
@@ -183,6 +182,8 @@ export function WorkoutPage() {
   const handleExitNewWorkoutModal = () => {
     setIsNewWorkoutModalVisible(false);
     setNewWorkout(null);
+    setWorkoutTimerSecondsStart(0);
+    handleAddSecondsUserTimer(0);
     setNewWorkoutName("");
   };
 
@@ -194,11 +195,11 @@ export function WorkoutPage() {
     if (newWorkout?.workoutExercises.length !== 0 && newWorkout) {
       const randomImage = getRandomWorkoutImage();
 
-      const updatedNewWorkout = { ...newWorkout, image: randomImage };
-      console.log(randomImage);
-      setNewWorkout({
+      const updatedNewWorkout = {
         ...newWorkout,
-      });
+        image: randomImage,
+        workoutName: newWorkoutName || `Workout ${workoutList.length + 1}`,
+      };
 
       setWorkoutList([...workoutList, updatedNewWorkout]);
     }
@@ -272,27 +273,20 @@ export function WorkoutPage() {
             onPress={() => handleOpenModal()}
             style={styles.newWorkoutButton}
           >
-            New workout
+            <Text style={styles.newWorkoutButtonText}>
+              Start a workout from scratch
+            </Text>
           </Button>
         </Box>
 
-        {/* Test button
-      <Button
-        onPress={() =>
-          api.post("/auth/signup", {
-            username: "secondUser",
-            email: "firstuser@firstuser.com",
-            password: "firstUser",
-            roles: ["user"],
-          })
-        }
-      >
-        Test BE
-      </Button> */}
-
+        {workoutList.length !== 0 && (
+          <Box style={styles.pastWorkoutsTextContainer}>
+            <Text style={styles.pastWorkoutsText}>Your past workouts</Text>
+          </Box>
+        )}
         <ScrollView style={styles.workoutListContainer}>
-          <Box style={styles.workoutList}>
-            {workoutList &&
+          <Box>
+            {workoutList.length !== 0 &&
               workoutList?.map((workout, index) => {
                 const id = workout.workoutId || "";
                 return (
@@ -317,12 +311,16 @@ export function WorkoutPage() {
                                 ? workout?.workoutName
                                 : `Workout ${index + 1}`
                             }`}</Text>
-                            <Text>{newWorkoutName}</Text>
+
                             <Button
                               variant={"solid"}
                               style={styles.startWorkoutButton}
                               onPress={() => handleStartWorkout(id)}
-                            >{`Start`}</Button>
+                            >
+                              <Text style={styles.startWorkoutButtonText}>
+                                Start
+                              </Text>
+                            </Button>
                           </Box>
 
                           <Box style={styles.exercisesContainer}>
@@ -392,81 +390,171 @@ export function WorkoutPage() {
         </TouchableWithoutFeedback>
       </Box> */}
 
-        <Modal
-          animationType={"slide"}
-          style={styles.newWorkoutModal}
-          visible={isNewWorkoutModalVisible}
-        >
-          <Box style={styles.newWorkoutModalHeaderContainer}>
-            {/* <Text style={styles.newWorkoutModalTitle}>Exercise list</Text> */}
-            <Box style={styles.newWoorkoutNameInputContainer}>
-              <Input
-                placeholder="Workout name"
-                value={newWorkoutName}
-                onChangeText={(newName) => handleNewWorkoutNameChange(newName)}
-              />
+        {isNewWorkoutModalVisible && (
+          <Modal
+            animationPreset={"slide"}
+            style={styles.newWorkoutModal}
+            isOpen={isNewWorkoutModalVisible}
+          >
+            <Box style={styles.newWorkoutModalHeaderContainer}>
+              {/* <Text style={styles.newWorkoutModalTitle}>Exercise list</Text> */}
+              <Box style={styles.newWorkoutNameInputContainer}>
+                <Input
+                  variant="ghost"
+                  placeholder="Workout name"
+                  style={styles.newWorkoutNameInput}
+                  value={newWorkoutName}
+                  onChangeText={(newName) =>
+                    handleNewWorkoutNameChange(newName)
+                  }
+                />
+
+                <Box style={styles.workoutTimerContainer}>
+                  <WorkoutTimer startFromSeconds={workoutTimerSecondsStart} />
+                </Box>
+              </Box>
+
+              <Button
+                variant={"solid"}
+                style={styles.createNewWorkoutButton}
+                onPress={handleSaveNewWorkout}
+                isDisabled={newWorkout?.workoutExercises.length === 0}
+              >
+                <Text style={styles.createNewWorkoutButtonText}>
+                  Finish Workout
+                </Text>
+              </Button>
             </Box>
 
-            <Button
-              variant={"solid"}
-              style={styles.createNewWorkoutButton}
-              onPress={handleSaveNewWorkout}
-              isDisabled={newWorkout?.workoutExercises.length === 0}
+            <CountdownCircleTimer
+              size={200}
+              key={workoutUserTimerKey}
+              isPlaying={!!workoutUserTimerSeconds}
+              duration={workoutUserTimerSeconds}
+              colors={["#e73213", "#8c200e", "#9dbeb7", "#7f9993"]}
+              colorsTime={[
+                workoutUserTimerSeconds / 1.5,
+                workoutUserTimerSeconds / 2,
+                workoutUserTimerSeconds / 4,
+                0,
+              ]}
+              onComplete={() => {
+                handleAddSecondsUserTimer(0);
+              }}
             >
-              Create new workout
-            </Button>
-          </Box>
+              {({ remainingTime }: any) => {
+                return remainingTime ? (
+                  <Text style={styles.timerText}>{remainingTime}</Text>
+                ) : (
+                  <React.Fragment>
+                    <Button
+                      variant="ghost"
+                      onPress={() => handleAddSecondsUserTimer(15)}
+                    >
+                      00:15
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onPress={() => handleAddSecondsUserTimer(30)}
+                    >
+                      00:30
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onPress={() => handleAddSecondsUserTimer(60)}
+                    >
+                      01:00
+                    </Button>
+                  </React.Fragment>
+                );
+              }}
+            </CountdownCircleTimer>
 
-          <Box style={styles.newWorkoutNameInput}>
-            <Input
-              placeholder="Seach for exercises"
-              value={newWorkoutNameSearch}
-              onChangeText={(searchQuery) =>
-                handleNewWorkoutNameSearchChange(searchQuery)
-              }
+            <FlatList
+              style={styles.newWorkoutExerciseList}
+              data={newWorkout?.workoutExercises}
+              renderItem={({ item, index }) => (
+                <CurrentWorkoutExercise
+                  sets={item.sets}
+                  weight={item.weight}
+                  exercise={item.exercise}
+                  reps={item.reps}
+                  key={index}
+                  workoutId={item.workoutId}
+                  exerciseId={item.exerciseId}
+                  handleUpdateExercise={handleUpdateExercise}
+                />
+              )}
             />
-          </Box>
 
-          {!newWorkoutNameSearch ? (
-            <FlatList
-              data={exerciseListMemo}
-              renderItem={({ item, index }) => (
-                <ExerciseInputField
-                  key={index}
-                  name={item.name}
-                  handleAddExercise={handleAddExercise}
-                  workoutId={newWorkout?.workoutId || ""}
-                  youtubeLink={item.youtubeLink}
-                />
-              )}
-            ></FlatList>
-          ) : (
-            <FlatList
-              data={exerciseListMemo.filter((exercise) => {
-                return exercise.name
-                  .toLowerCase()
-                  .includes(newWorkoutNameSearch.toLowerCase());
-              })}
-              renderItem={({ item, index }) => (
-                <ExerciseInputField
-                  key={index}
-                  name={item.name}
-                  handleAddExercise={handleAddExercise}
-                  workoutId={newWorkout?.workoutId || ""}
-                  youtubeLink={item.youtubeLink}
-                />
-              )}
-            ></FlatList>
-          )}
+            <Box style={styles.newWorkoutBottomActionsContainer}>
+              <Button onPress={handleExitNewWorkoutModal} variant="secondary">
+                <Text style={styles.exitNewWorkoutModalButtonText}>
+                  Cancel workout
+                </Text>
+              </Button>
 
-          <Button
-            style={styles.exitNewWorkoutModalButton}
-            onPress={handleExitNewWorkoutModal}
-            variant="secondary"
-          >
-            X Exit
-          </Button>
-        </Modal>
+              <Button onPress={() => toggleExerciseListModalOpen()}>
+                <Text style={styles.newWorkoutNewExerciseButtonText}>
+                  Add new exercise
+                </Text>
+              </Button>
+            </Box>
+
+            <Modal
+              isOpen={isExerciseListModalOpen}
+              style={styles.exerciseListModal}
+            >
+              <Modal.CloseButton
+                onPress={() => toggleExerciseListModalOpen()}
+              ></Modal.CloseButton>
+              <Box style={styles.exerciseListModalContentContainer}>
+                <Box style={styles.searchForExerciseInputContainer}>
+                  <Input
+                    style={styles.searchForExerciseInput}
+                    placeholder="Seach for exercises"
+                    value={newWorkoutNameSearch}
+                    onChangeText={(searchQuery) =>
+                      handleNewWorkoutNameSearchChange(searchQuery)
+                    }
+                  />
+                </Box>
+
+                {!newWorkoutNameSearch ? (
+                  <FlatList
+                    data={exerciseListMemo}
+                    renderItem={({ item, index }) => (
+                      <ExerciseInputField
+                        key={index}
+                        name={item.name}
+                        handleAddExercise={handleAddExercise}
+                        workoutId={newWorkout?.workoutId || ""}
+                        youtubeLink={item.youtubeLink}
+                      />
+                    )}
+                  ></FlatList>
+                ) : (
+                  <FlatList
+                    data={exerciseListMemo.filter((exercise) => {
+                      return exercise.name
+                        .toLowerCase()
+                        .includes(newWorkoutNameSearch.toLowerCase());
+                    })}
+                    renderItem={({ item, index }) => (
+                      <ExerciseInputField
+                        key={index}
+                        name={item.name}
+                        handleAddExercise={handleAddExercise}
+                        workoutId={newWorkout?.workoutId || ""}
+                        youtubeLink={item.youtubeLink}
+                      />
+                    )}
+                  ></FlatList>
+                )}
+              </Box>
+            </Modal>
+          </Modal>
+        )}
 
         <Modal animationType={"slide"} visible={isWorkoutModalVisible}>
           <Box style={styles.currentWorkoutInfo}>
@@ -532,9 +620,26 @@ const styles = EStyleSheet.create({
     bottom: 0,
   },
   newWorkoutButton: {
-    marginTop: "2.5%",
+    marginTop: "10%",
     marginBottom: "2.5%",
-    width: "35%",
+    width: "65%",
+  },
+  pastWorkoutsTextContainer: {
+    backgroundColor: "$backgroundColor",
+  },
+
+  pastWorkoutsText: {
+    fontSize: 33,
+    paddingTop: 33 - 33 * 0.75,
+    color: "#fff",
+    fontWeight: "600",
+    marginLeft: "10%",
+    marginTop: "10%",
+  },
+  newWorkoutButtonText: {
+    fontSize: 15,
+    color: "#fff",
+    fontWeight: "600",
   },
   newWorkoutButtonContainer: {
     display: "flex",
@@ -545,16 +650,22 @@ const styles = EStyleSheet.create({
   },
   workoutHeader: {
     display: "flex",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
     width: "100%",
     marginTop: "5%",
     marginBottom: "3%",
-    marginLeft: "1%",
+    marginLeft: "6%",
   },
   startWorkoutButton: {
     width: "28%",
+    marginRight: "10%",
+  },
+  startWorkoutButtonText: {
+    fontSize: 15,
+    color: "#fff",
+    fontWeight: "600",
   },
   deleteWorkoutButton: {
     width: "28%",
@@ -645,8 +756,8 @@ const styles = EStyleSheet.create({
     marginTop: "5%",
     marginBottom: "3%",
   },
-  exitNewWorkoutModalButton: {
-    paddingBottom: "5%",
+  exitNewWorkoutModalButtonText: {
+    fontWeight: "600",
   },
   newWorkoutModalHeaderContainer: {
     display: "flex",
@@ -656,11 +767,15 @@ const styles = EStyleSheet.create({
 
     flexDirection: "row",
     width: "95%",
-    marginTop: "12%",
+    marginTop: "5%",
     marginBottom: "5%",
   },
   createNewWorkoutButton: {
     width: "40%",
+  },
+  createNewWorkoutButtonText: {
+    fontWeight: "600",
+    color: "#fff",
   },
   newWorkoutModalTitle: {
     width: "60%",
@@ -675,13 +790,47 @@ const styles = EStyleSheet.create({
   },
   newWoorkoutNameInputContainer: {
     display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "35%",
+    gap: "-1rem",
+    width: "50%",
+  },
+  newWorkoutNameInput: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
   },
   newWorkoutModal: {
     height: "50%",
     width: "80%",
+    alignSelf: "center",
+  },
+  searchForExerciseInput: {
+    color: "white",
+  },
+  newWorkoutNewExerciseButtonText: {
+    fontWeight: "600",
+    color: "#fff",
+  },
+  timerText: {
+    fontSize: 15,
+    fontWeight: "bold",
+    color: "$darkGray",
+  },
+  workoutTimerContainer: {
+    marginTop: "3%",
+    marginLeft: "6%",
+  },
+  newWorkoutExerciseList: {
+    width: "80%",
+    alignSelf: "center",
+  },
+  newWorkoutBottomActionsContainer: {
+    display: "flex",
+    justifyContent: "space-around",
+    alignItems: "center",
+    flexDirection: "row",
+    width: "100%",
+    marginTop: "5%",
+    marginBottom: "10%",
   },
 });
 
