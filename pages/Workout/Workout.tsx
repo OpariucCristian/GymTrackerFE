@@ -13,7 +13,7 @@ import {
   Modal,
 } from "native-base";
 import { getRandomWorkoutImage } from "../../assets/workout-backgrounds/Images";
-import CurrentWorkoutExercise from "./CurrentWorkoutExercise";
+import CurrentWorkoutExercise from "./NewWorkout/NewWorkoutExercise";
 import { WorkoutExercise } from "../../models/workout-exercise";
 import WorkoutTimer from "./WorkoutTimer/WorkoutTimer";
 import { api } from "../../api/api";
@@ -68,24 +68,14 @@ function WorkoutPage() {
   };
 
   const handleAddExercise = (
-    name: string,
-    sets: number | undefined,
-    weight: number | undefined,
-    reps: number | undefined,
+    newExercise: WorkoutExercise,
     workoutId: string
   ) => {
-    const newExercise = {
-      exercise: name,
-      sets,
-      workoutId,
-      exerciseId: generateUUID(),
-      isExerciseCompleted: false,
-    };
-
+    console.log(newExercise);
     if (newWorkout) {
       setNewWorkout({
         ...newWorkout,
-        workoutId,
+        workoutId: workoutId,
         workoutExercises: [...newWorkout.workoutExercises, newExercise],
       });
     }
@@ -96,39 +86,43 @@ function WorkoutPage() {
     updatedExercise?: WorkoutExercise,
     updatedExerciseId?: string
   ) => {
-    if (currentWorkout && updatedExercise && isExerciseCompleted) {
-      const updatedWorkoutExercises = currentWorkout.workoutExercises.map(
+    console.log(currentWorkout && updatedExercise);
+    if (newWorkout && updatedExercise) {
+      const updatedWorkoutExercises = newWorkout.workoutExercises.map(
         (exercise) => {
           if (exercise.exerciseId === updatedExercise.exerciseId) {
+            console.log("entered condition");
             return updatedExercise;
           } else {
+            console.log("entered else");
             return exercise;
           }
         }
       );
 
-      setCurrentWorkout({
-        ...currentWorkout,
-        workoutExercises: updatedWorkoutExercises,
-      });
-    } else if (currentWorkout && updatedExerciseId && !isExerciseCompleted) {
-      const updatedWorkoutExercises = currentWorkout.workoutExercises.map(
-        (exercise) => {
-          if (exercise.exerciseId === updatedExerciseId) {
-            return {
-              ...exercise,
-              isExerciseCompleted: false,
-            };
-          } else {
-            return exercise;
-          }
-        }
-      );
-      setCurrentWorkout({
-        ...currentWorkout,
+      setNewWorkout({
+        ...newWorkout,
         workoutExercises: updatedWorkoutExercises,
       });
     }
+    //  else if (currentWorkout && updatedExerciseId && !isExerciseCompleted) {
+    //   const updatedWorkoutExercises = currentWorkout.workoutExercises.map(
+    //     (exercise) => {
+    //       if (exercise.exerciseId === updatedExerciseId) {
+    //         return {
+    //           ...exercise,
+    //           isExerciseCompleted: false,
+    //         };
+    //       } else {
+    //         return exercise;
+    //       }
+    //     }
+    //   );
+    //   setCurrentWorkout({
+    //     ...currentWorkout,
+    //     workoutExercises: updatedWorkoutExercises,
+    //   });
+    // }
   };
 
   const handleStartWorkout = (workoutId: string) => {

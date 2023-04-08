@@ -2,7 +2,7 @@ import { Box, Button, Modal, Text, Input, FlatList } from "native-base";
 import React, { useState } from "react";
 import WorkoutTimer from "../WorkoutTimer/WorkoutTimer";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
-import CurrentWorkoutExercise from "../CurrentWorkoutExercise";
+import NewWorkoutExercise from "./NewWorkoutExercise";
 import useToggle from "../../../hooks/toogle-hook";
 import exerciseList from "../../../constants/exerciseList";
 import ExerciseInputField from "../ExerciseInputField";
@@ -117,7 +117,8 @@ const NewWorkout = (props: NewWorkoutProps) => {
           style={styles.newWorkoutExerciseList}
           data={newWorkout?.workoutExercises}
           renderItem={({ item, index }) => (
-            <CurrentWorkoutExercise
+            <NewWorkoutExercise
+              key={index}
               exercise={item}
               handleUpdateExercise={handleUpdateExercise}
             />

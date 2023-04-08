@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { ExerciseSet } from "../../../../models/exercise-set";
+import { ExerciseSet } from "../../../../../models/exercise-set";
 import { Box, Checkbox, Input, Text } from "native-base";
-import styles from "../CurrentWorkoutExercise.styles";
+import styles from "../NewWorkoutExercise.styles";
 interface CurrentWorkoutExerciseSetProps {
   set: ExerciseSet;
   updateExercise: (isExerciseCompleted: boolean) => void;

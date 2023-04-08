@@ -20,13 +20,7 @@ export default interface NewWorkoutProps {
     | ((event: GestureResponderEvent) => void)
     | null
     | undefined;
-  handleAddExercise: (
-    name: string,
-    sets: number | undefined,
-    weight: number | undefined,
-    reps: number | undefined,
-    workoutId: string
-  ) => void;
+  handleAddExercise: (exercise: WorkoutExercise, workoutId: string) => void;
   workoutUserTimerSeconds: number;
   workoutUserTimerKey: React.Key | null | undefined;
   workoutTimerSecondsStart: number | undefined;

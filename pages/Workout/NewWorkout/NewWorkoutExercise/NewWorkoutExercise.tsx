@@ -1,12 +1,13 @@
-import { Box, Checkbox, Input, Text } from "native-base";
+import { Box, Button, Checkbox, Input, Text } from "native-base";
 import React, { useEffect, useState } from "react";
-import { WorkoutExercise } from "../../../models/workout-exercise";
-import CurrentWorkoutExerciseProps from "../../../models/PropModels/CurrentWorkoutExerciseProps";
-import styles from "./CurrentWorkoutExercise.styles";
-import CurrentWorkoutExerciseSet from "./CurrentWokroutExerciseSet/CurrentWorkoutExerciseSet";
-import { ExerciseSet } from "../../../models/exercise-set";
+import { WorkoutExercise } from "../../../../models/workout-exercise";
+import CurrentWorkoutExerciseProps from "../../../../models/PropModels/CurrentWorkoutExerciseProps";
+import styles from "./NewWorkoutExercise.styles";
+import CurrentWorkoutExerciseSet from "./NewWokroutExerciseSet/NewWorkoutExerciseSet";
+import { ExerciseSet } from "../../../../models/exercise-set";
+import { generateUUID } from "../../../../utils/uuid";
 
-const CurrentWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
+const NewWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
   const { exercise, handleUpdateExercise } = props;
 
   const [updatedSets, setUpdatedSets] = useState<string>();
@@ -61,6 +62,25 @@ const CurrentWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
   // useEffect(() => {
   //   updateExercise(isChecked);
   // }, [isChecked]);
+
+  const addEmptySet = (): void => {
+    const emptySet: ExerciseSet = {
+      reps: 0,
+      weight: 0,
+      setId: generateUUID(),
+      isSetCompleted: false,
+    };
+
+    const updatedExercise: WorkoutExercise = {
+      exercise: exercise.exercise,
+      workoutId: exercise.workoutId,
+      exerciseId: exercise.exerciseId,
+      isExerciseCompleted: exercise.isExerciseCompleted,
+      sets: [...exercise.sets, emptySet],
+    };
+
+    handleUpdateExercise(false, updatedExercise, exercise.exerciseId);
+  };
 
   return (
     <React.Fragment>
@@ -128,9 +148,11 @@ const CurrentWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
             </Box>
           );
         })}
+
+        <Button onPress={() => addEmptySet()}>Add new set</Button>
       </Box>
     </React.Fragment>
   );
 };
 
-export default CurrentWorkoutExercise;
+export default NewWorkoutExercise;
