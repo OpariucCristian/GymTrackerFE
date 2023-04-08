@@ -14,7 +14,6 @@ import {
   Text,
   Modal,
 } from "native-base";
-import EStyleSheet from "react-native-extended-stylesheet";
 import { getRandomWorkoutImage } from "../../assets/workout-backgrounds/Images";
 import CurrentWorkoutExercise from "./CurrentWorkoutExercise";
 import { WorkoutExercise } from "../../models/workout-exercise";
@@ -23,8 +22,9 @@ import { api } from "../../api/api";
 import { theme } from "../../styles/theme";
 import useToggle from "../../hooks/toogle-hook";
 import NewWorkout from "./NewWorkout/NewWorkout";
+import styles from "./Workout.styles";
 
-export function WorkoutPage() {
+const WorkoutPage = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const [workoutList, setWorkoutList] = useState<Workout[]>([]);
@@ -32,18 +32,19 @@ export function WorkoutPage() {
   const [newWorkout, setNewWorkout] = useState<Workout | null>();
   const [newWorkoutName, setNewWorkoutName] = useState<string>("");
 
+  const [currentWorkout, setCurrentWorkout] = useState<Workout>();
+
   const [workoutTimerSecondsStart, setWorkoutTimerSecondsStart] =
     useState<number>(0);
   const [workoutUserTimerSeconds, setWorkoutUserTimerSeconds] =
     useState<number>(0);
   const [workoutUserTimerKey, setWorkoutUserTimerKey] = useState<number>(0);
+
   const [
     isNewWorkoutModalVisible,
     toggleIsNewWorkoutModalVisible,
     setIsNewWorkoutModalVisible,
   ] = useToggle(false);
-
-  const [currentWorkout, setCurrentWorkout] = useState<Workout>();
 
   const [isWorkoutModalVisible, , setIsWorkoutModalVisible] = useToggle(false);
 
@@ -423,256 +424,6 @@ export function WorkoutPage() {
       </NativeBaseProvider>
     </>
   );
-}
+};
 
-const styles = EStyleSheet.create({
-  workoutListContainer: {
-    backgroundColor: "$backgroundColor",
-  },
-  workoutList: {
-    marginBottom: "10%",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  navbar: {
-    display: "flex",
-    justifyContent: "center",
-    position: "absolute",
-    bottom: 0,
-  },
-  newWorkoutButton: {
-    marginTop: "10%",
-    marginBottom: "2.5%",
-    width: "65%",
-  },
-  pastWorkoutsTextContainer: {
-    backgroundColor: "$backgroundColor",
-  },
-
-  pastWorkoutsText: {
-    fontSize: 33,
-    paddingTop: 33 - 33 * 0.75,
-    color: "#fff",
-    fontWeight: "600",
-    marginLeft: "10%",
-    marginTop: "10%",
-  },
-  newWorkoutButtonText: {
-    fontSize: 15,
-    color: "#fff",
-    fontWeight: "600",
-  },
-  newWorkoutButtonContainer: {
-    display: "flex",
-    justifyContent: "center",
-    backgroundColor: "$backgroundColor",
-    alignItems: "center",
-    width: "100%",
-  },
-  workoutHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexDirection: "row",
-    width: "100%",
-    marginTop: "5%",
-    marginBottom: "3%",
-    marginLeft: "6%",
-  },
-  startWorkoutButton: {
-    width: "28%",
-    marginRight: "10%",
-  },
-  startWorkoutButtonText: {
-    fontSize: 15,
-    color: "#fff",
-    fontWeight: "600",
-  },
-  deleteWorkoutButton: {
-    width: "28%",
-  },
-  workoutExercise: {
-    marginTop: "2%",
-    marginLeft: "2%",
-    display: "flex",
-  },
-  workoutCard: {
-    display: "flex",
-    width: "80%",
-    borderRadius: 10,
-    border: "1px solid black",
-    overflow: "hidden",
-    alignSelf: "center",
-    marginTop: "10%",
-  },
-  workoutTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "white",
-  },
-  workoutExerciseTitle: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "white",
-  },
-  workoutExerciseDetails: {
-    fontSize: 12,
-    color: "white",
-  },
-  exercisesContainerScrollable: {
-    display: "flex",
-    flexDirection: "row",
-    margin: "1%",
-  },
-  exercisesContainer: {
-    display: "flex",
-    flexDirection: "row",
-    margin: "1%",
-    height: "50%",
-    marginTop: "4%",
-  },
-
-  exerciseContainer: {
-    color: "white",
-    marginLeft: "1rem",
-  },
-  backgroundImage: {
-    position: "relative",
-    zIndex: -1,
-    width: "100%",
-    height: "11rem",
-    borderRadius: 10,
-  },
-  darkness: {
-    backgroundColor: "rgba(0,0,0,0.15)",
-    width: "100%",
-    height: 200,
-  },
-  deleteWorkoutCardButton: {
-    right: "25%",
-    height: "10.8rem",
-    marginTop: "60%",
-    zIndex: 1,
-  },
-  currentWorkoutInfo: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    flexDirection: "column",
-    width: "100%",
-    marginTop: "13%",
-    marginLeft: "3%",
-    marginBottom: "2%",
-  },
-  currentWorkoutModalTitle: {
-    fontSize: 23,
-    fontWeight: "bold",
-  },
-  currentWorkoutButtonsContainer: {
-    display: "flex",
-    justifyContent: "space-around",
-    alignItems: "center",
-    flexDirection: "row",
-    width: "100%",
-    marginTop: "5%",
-    marginBottom: "3%",
-  },
-  exitNewWorkoutModalButtonText: {
-    fontWeight: "600",
-  },
-  newWorkoutModalHeaderContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginLeft: "3%",
-
-    flexDirection: "row",
-    width: "95%",
-    marginTop: "5%",
-    marginBottom: "5%",
-  },
-  createNewWorkoutButton: {
-    width: "40%",
-  },
-  createNewWorkoutButtonText: {
-    fontWeight: "600",
-    color: "#fff",
-  },
-  newWorkoutModalTitle: {
-    width: "60%",
-  },
-  newExerciseInputFields: {
-    marginTop: "5%",
-  },
-  newWorkoutNameInputContainer: {
-    display: "flex",
-    gap: "-1rem",
-    width: "50%",
-  },
-  newWorkoutNameInput: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  newWorkoutModal: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    height: "100%",
-    width: "100%",
-    backgroundColor: "$backgroundColor",
-  },
-  exerciseListModal: {
-    display: "flex",
-    // justifyContent: "space-between",
-    // alignItems: "center",
-    height: "100%",
-    width: "100%",
-    backgroundColor: "$backgroundColor",
-  },
-  exerciseListModalContentContainer: {
-    width: "100%",
-    height: "85%",
-    gap: "10%",
-  },
-  searchForExerciseInputContainer: {
-    width: "80%",
-    alignSelf: "center",
-  },
-  searchForExerciseInput: {
-    color: "white",
-  },
-  newWorkoutNewExerciseButtonText: {
-    fontWeight: "600",
-    color: "#fff",
-  },
-  timerText: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "$darkGray",
-  },
-  workoutTimerContainer: {
-    marginTop: "3%",
-    marginLeft: "6%",
-  },
-  newWorkoutExerciseList: {
-    width: "80%",
-    alignSelf: "center",
-  },
-  newWorkoutBottomActionsContainer: {
-    display: "flex",
-    justifyContent: "space-around",
-    alignItems: "center",
-    flexDirection: "row",
-    width: "100%",
-    marginTop: "5%",
-    marginBottom: "10%",
-  },
-});
-
-// export default WorkoutPage;
+export default WorkoutPage;

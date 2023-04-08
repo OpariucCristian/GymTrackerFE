@@ -1,35 +1,20 @@
-import { Box, Button, Checkbox, Input, Text, FormControl } from "native-base";
+import { Box, Checkbox, Input, Text } from "native-base";
 import React, { useEffect, useState } from "react";
-import {
-  NativeSyntheticEvent,
-  Pressable,
-  TextInput,
-  TextInputChangeEventData,
-} from "react-native";
-import EStyleSheet from "react-native-extended-stylesheet";
 import { WorkoutExercise } from "../../../models/workout-exercise";
+import CurrentWorkoutExerciseProps from "../../../models/PropModels/CurrentWorkoutExerciseProps";
+import styles from "./CurrentWorkoutExercise.styles";
 
-const CurrentWorkoutExercise = ({
-  exercise,
-  sets,
-  weight,
-  reps,
-  workoutId,
-  exerciseId,
-  handleUpdateExercise,
-}: {
-  exercise: string;
-  sets?: number | undefined;
-  weight: number | undefined;
-  reps: number | undefined;
-  workoutId: string;
-  exerciseId: string;
-  handleUpdateExercise: (
-    isExerciseCompleted: boolean,
-    updatedExercise?: WorkoutExercise,
-    updatedExerciseId?: string
-  ) => void;
-}) => {
+const CurrentWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
+  const {
+    exercise,
+    sets,
+    weight,
+    reps,
+    workoutId,
+    exerciseId,
+    handleUpdateExercise,
+  } = props;
+
   const [updatedSets, setUpdatedSets] = useState<string>();
   const [updatedWeight, setUpdatedWeight] = useState<string>();
   const [updatedReps, setUpdatedReps] = useState<string>();
@@ -140,43 +125,5 @@ const CurrentWorkoutExercise = ({
     </React.Fragment>
   );
 };
-
-const styles = EStyleSheet.create({
-  exerciseContainer: {
-    color: "white",
-    padding: 10,
-    margin: 10,
-    marginTop: 20,
-    borderRadius: 10,
-    shadowColor: "#000",
-    width: "90%",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  exerciseControlsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 5,
-  },
-  exerciseName: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "white",
-  },
-  exerciseControlText: {
-    color: "white",
-    fontWeight: "600",
-  },
-  inputField: {
-    color: "white",
-    fontWeight: "600",
-    textAlign: "center",
-  },
-});
 
 export default CurrentWorkoutExercise;

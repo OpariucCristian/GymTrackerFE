@@ -1,28 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Linking } from "react-native";
-import { ScrollView, TextInput } from "react-native-gesture-handler";
-import { Box, Button, Input, Text } from "native-base";
-import EStyleSheet from "react-native-extended-stylesheet";
+import React, { useState } from "react";
+import { View } from "react-native";
+import { Box, Button, Input } from "native-base";
 import Dropdown from "../../../components/dropdown/Dropdown";
-import { generateUUID } from "../../../utils/uuid";
+import ExerciseCardProps from "../../../models/PropModels/ExerciseCardProps";
+import styles from "./ExerciseInputField.styles";
 
-const ExerciseCard = ({
-  name,
-  handleAddExercise,
-  workoutId,
-  youtubeLink,
-}: {
-  name: string;
-  handleAddExercise: (
-    name: string,
-    sets: number | undefined,
-    weight: number | undefined,
-    reps: number | undefined,
-    workoutId: string
-  ) => void;
-  workoutId: string;
-  youtubeLink?: string;
-}) => {
+const ExerciseCard = (props: ExerciseCardProps) => {
+  const { name, handleAddExercise, workoutId, youtubeLink } = props;
+
   const [sets, setSets] = useState<number>();
   const [weight, setWeight] = useState<number>();
   const [reps, setReps] = useState<number>();
@@ -95,59 +80,5 @@ const ExerciseCard = ({
     </View>
   );
 };
-
-const styles = EStyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  navbar: {
-    display: "flex",
-    justifyContent: "center",
-    position: "absolute",
-    bottom: 0,
-  },
-  cardContainer: {
-    flex: 1,
-    width: "100%",
-
-    justifyContent: "space-between",
-    flexDirection: "row",
-    padding: 4,
-    paddingHorizontal: 10,
-  },
-  inputFieldContainer: {
-    width: "4rem",
-  },
-  inputField: {
-    height: "2rem",
-  },
-  button: {
-    width: "25%",
-  },
-  exerciseName: {
-    alignSelf: "center",
-    width: "25%",
-  },
-
-  dropDownContentContainer: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  workoutControlsContainer: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    padding: 4,
-    paddingHorizontal: 10,
-  },
-});
 
 export default ExerciseCard;
