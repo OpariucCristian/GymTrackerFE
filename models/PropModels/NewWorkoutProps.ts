@@ -1,5 +1,5 @@
 import { GestureResponderEvent } from "react-native";
-import { Workout } from "../workout-list-interface";
+import { Workout } from "../workout-list";
 import { WorkoutExercise } from "../workout-exercise";
 
 export default interface NewWorkoutProps {

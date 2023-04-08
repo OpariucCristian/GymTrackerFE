@@ -118,13 +118,7 @@ const NewWorkout = (props: NewWorkoutProps) => {
           data={newWorkout?.workoutExercises}
           renderItem={({ item, index }) => (
             <CurrentWorkoutExercise
-              sets={item.sets}
-              weight={item.weight}
-              exercise={item.exercise}
-              reps={item.reps}
-              key={index}
-              workoutId={item.workoutId}
-              exerciseId={item.exerciseId}
+              exercise={item}
               handleUpdateExercise={handleUpdateExercise}
             />
           )}

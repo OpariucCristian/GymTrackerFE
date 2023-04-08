@@ -2,7 +2,7 @@ import { Box, Text, Button } from "native-base";
 import React from "react";
 import { Animated, ImageBackground, View } from "react-native";
 import { ScrollView, Swipeable } from "react-native-gesture-handler";
-import { Workout } from "../../../models/workout-list-interface";
+import { Workout } from "../../../models/workout-list";
 import styles from "./PastWorkouts.styles";
 
 interface PasWorkoutsProps {

@@ -8,13 +8,8 @@ import styles from "./ExerciseInputField.styles";
 const ExerciseCard = (props: ExerciseCardProps) => {
   const { name, handleAddExercise, workoutId, youtubeLink } = props;
 
-  const [sets, setSets] = useState<number>();
   const [weight, setWeight] = useState<number>();
   const [reps, setReps] = useState<number>();
-
-  const handleSetsChange = (sets: number) => {
-    setSets(sets);
-  };
 
   const handleWeightChange = (weight: number) => {
     setWeight(weight);
@@ -30,17 +25,6 @@ const ExerciseCard = (props: ExerciseCardProps) => {
         <React.Fragment>
           <Box style={styles.dropDownContentContainer}>
             <Box style={styles.workoutControlsContainer}>
-              <Box style={styles.inputFieldContainer}>
-                <Input
-                  size={"sm"}
-                  placeholder="Sets"
-                  keyboardType="numeric"
-                  style={styles.inputField}
-                  onChangeText={(sets) => handleSetsChange(Number(sets))}
-                  value={sets?.toString() || ""}
-                />
-              </Box>
-
               <Box style={styles.inputFieldContainer}>
                 <Input
                   size={"sm"}
@@ -65,9 +49,9 @@ const ExerciseCard = (props: ExerciseCardProps) => {
 
               <View style={styles.button}>
                 <Button
-                  isDisabled={!sets || !weight || !reps}
+                  isDisabled={!weight || !reps}
                   onPress={() =>
-                    handleAddExercise(name, sets, reps, weight, workoutId)
+                    handleAddExercise(name, reps, weight, workoutId)
                   }
                 >
                   Add

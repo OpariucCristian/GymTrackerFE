@@ -1,12 +1,7 @@
 import { WorkoutExercise } from "../workout-exercise";
 
 export default interface CurrentWorkoutExerciseProps {
-  exercise: string;
-  sets?: number | undefined;
-  weight: number | undefined;
-  reps: number | undefined;
-  workoutId: string;
-  exerciseId: string;
+  exercise: WorkoutExercise;
   handleUpdateExercise: (
     isExerciseCompleted: boolean,
     updatedExercise?: WorkoutExercise,

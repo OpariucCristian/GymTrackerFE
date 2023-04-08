@@ -3,17 +3,11 @@ import React, { useEffect, useState } from "react";
 import { WorkoutExercise } from "../../../models/workout-exercise";
 import CurrentWorkoutExerciseProps from "../../../models/PropModels/CurrentWorkoutExerciseProps";
 import styles from "./CurrentWorkoutExercise.styles";
+import CurrentWorkoutExerciseSet from "./CurrentWokroutExerciseSet/CurrentWorkoutExerciseSet";
+import { ExerciseSet } from "../../../models/exercise-set";
 
 const CurrentWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
-  const {
-    exercise,
-    sets,
-    weight,
-    reps,
-    workoutId,
-    exerciseId,
-    handleUpdateExercise,
-  } = props;
+  const { exercise, handleUpdateExercise } = props;
 
   const [updatedSets, setUpdatedSets] = useState<string>();
   const [updatedWeight, setUpdatedWeight] = useState<string>();
@@ -36,43 +30,43 @@ const CurrentWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
     setIsChecked(!isChecked);
   };
 
-  const updateExercise = (isExerciseCompleted: boolean): void => {
-    if (isExerciseCompleted) {
-      const updatedSetsNumber = Number(updatedSets);
-      const updatedWeightNumber = Number(updatedWeight);
-      const updatedRepsNumber = Number(updatedReps);
+  // const updateExercise = (isExerciseCompleted: boolean): void => {
+  //   if (isExerciseCompleted) {
+  //     const updatedSetsNumber = Number(updatedSets);
+  //     const updatedWeightNumber = Number(updatedWeight);
+  //     const updatedRepsNumber = Number(updatedReps);
 
-      const updatedExercise: WorkoutExercise = {
-        exercise: exercise,
-        sets: updatedSetsNumber,
-        weight: updatedWeightNumber,
-        reps: updatedRepsNumber,
-        workoutId: workoutId,
-        exerciseId: exerciseId,
-        isExerciseCompleted: isExerciseCompleted,
-      };
+  //     const updatedExercise: WorkoutExercise = {
+  //       exercise: exercise.exercise,
+  //       sets: updatedSetsNumber,
+  //       weight: updatedWeightNumber,
+  //       reps: updatedRepsNumber,
+  //       workoutId: exerciseworkoutId,
+  //       exerciseId: exerciseId,
+  //       isExerciseCompleted: isExerciseCompleted,
+  //     };
 
-      handleUpdateExercise(isExerciseCompleted, updatedExercise);
-    } else {
-      handleUpdateExercise(isExerciseCompleted, undefined, exerciseId);
-    }
-  };
+  //     handleUpdateExercise(isExerciseCompleted, updatedExercise);
+  //   } else {
+  //     handleUpdateExercise(isExerciseCompleted, undefined, exerciseId);
+  //   }
+  // };
 
-  useEffect(() => {
-    setUpdatedSets(sets?.toString());
-    setUpdatedWeight(weight?.toString());
-    setUpdatedReps(reps?.toString());
-  }, []);
+  // useEffect(() => {
+  //   setUpdatedSets(sets?.toString());
+  //   setUpdatedWeight(weight?.toString());
+  //   setUpdatedReps(reps?.toString());
+  // }, []);
 
-  useEffect(() => {
-    updateExercise(isChecked);
-  }, [isChecked]);
+  // useEffect(() => {
+  //   updateExercise(isChecked);
+  // }, [isChecked]);
 
   return (
     <React.Fragment>
       <Box style={styles.exerciseContainer}>
-        <Text style={styles.exerciseName}>{exercise}</Text>
-        <Box style={styles.exerciseControlsContainer}>
+        <Text style={styles.exerciseName}>{exercise.exercise}</Text>
+        {/* <Box style={styles.exerciseControlsContainer}>
           <Box>
             <Text style={styles.exerciseControlText}>Sets:</Text>
             <Input
@@ -120,7 +114,20 @@ const CurrentWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
             accessibilityLabel={"Checkbox"}
             onChange={handleOnCheck}
           />
-        </Box>
+        </Box> */}
+        {exercise.sets.map((set: ExerciseSet) => {
+          return (
+            <Box style={styles.setContainer}>
+              {/* <Text style={styles.setNumber}>Set {set.setNumber}</Text>
+              <Text style={styles.setWeight}>Weight: {set.weight}kg</Text>
+              <Text style={styles.setReps}>Reps: {set.reps}</Text> */}
+              <CurrentWorkoutExerciseSet
+                set={set}
+                updateExercise={handleUpdateExercise}
+              />
+            </Box>
+          );
+        })}
       </Box>
     </React.Fragment>
   );

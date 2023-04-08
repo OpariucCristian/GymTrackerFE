@@ -1,9 +1,7 @@
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { RootStackParamList } from "../../models/root-stack-param-list";
-import { View, ImageBackground, Animated } from "react-native";
-import { ScrollView, Swipeable } from "react-native-gesture-handler";
-import { Workout } from "../../models/workout-list-interface";
+import { Workout } from "../../models/workout-list";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { generateUUID } from "../../utils/uuid";
 import {
@@ -79,14 +77,12 @@ function WorkoutPage() {
     const newExercise = {
       exercise: name,
       sets,
-      weight,
-      reps,
       workoutId,
       exerciseId: generateUUID(),
       isExerciseCompleted: false,
     };
 
-    if (newWorkout && sets && weight) {
+    if (newWorkout) {
       setNewWorkout({
         ...newWorkout,
         workoutId,
@@ -275,7 +271,7 @@ function WorkoutPage() {
             />
           )}
 
-          <Modal animationPreset={"slide"} isOpen={isWorkoutModalVisible}>
+          {/* <Modal animationPreset={"slide"} isOpen={isWorkoutModalVisible}>
             <Box style={styles.currentWorkoutInfo}>
               <Text style={styles.currentWorkoutModalTitle}>
                 {currentWorkout?.workoutName}
@@ -315,7 +311,7 @@ function WorkoutPage() {
                 Finish workout
               </Button>
             </Box>
-          </Modal>
+          </Modal> */}
         </Box>
       </NativeBaseProvider>
     </>
