@@ -2,9 +2,7 @@ import { useNavigation, NavigationProp } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { RootStackParamList } from "../../models/root-stack-param-list";
 import { View, ImageBackground, Animated } from "react-native";
-import ExerciseInputField from "./ExerciseInputField";
-import exerciseList from "../../constants/exerciseList";
-import { TextInput, ScrollView, Swipeable } from "react-native-gesture-handler";
+import { ScrollView, Swipeable } from "react-native-gesture-handler";
 import { Workout } from "../../models/workout-list-interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { generateUUID } from "../../utils/uuid";
@@ -12,7 +10,6 @@ import {
   Box,
   Button,
   FlatList,
-  Input,
   NativeBaseProvider,
   Text,
   Modal,
@@ -24,8 +21,8 @@ import { WorkoutExercise } from "../../models/workout-exercise";
 import WorkoutTimer from "./WorkoutTimer/WorkoutTimer";
 import { api } from "../../api/api";
 import { theme } from "../../styles/theme";
-import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import useToggle from "../../hooks/toogle-hook";
+import NewWorkout from "./NewWorkout/NewWorkout";
 
 export function WorkoutPage() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -34,29 +31,21 @@ export function WorkoutPage() {
 
   const [newWorkout, setNewWorkout] = useState<Workout | null>();
   const [newWorkoutName, setNewWorkoutName] = useState<string>("");
+
+  const [workoutTimerSecondsStart, setWorkoutTimerSecondsStart] =
+    useState<number>(0);
+  const [workoutUserTimerSeconds, setWorkoutUserTimerSeconds] =
+    useState<number>(0);
+  const [workoutUserTimerKey, setWorkoutUserTimerKey] = useState<number>(0);
   const [
     isNewWorkoutModalVisible,
     toggleIsNewWorkoutModalVisible,
     setIsNewWorkoutModalVisible,
   ] = useToggle(false);
 
-  const [newWorkoutNameSearch, setNewWorkoutNameSearch] = useState<string>("");
-
   const [currentWorkout, setCurrentWorkout] = useState<Workout>();
 
   const [isWorkoutModalVisible, , setIsWorkoutModalVisible] = useToggle(false);
-
-  const [isExerciseListModalOpen, toggleExerciseListModalOpen] =
-    useToggle(false);
-
-  const [workoutTimerSecondsStart, setWorkoutTimerSecondsStart] =
-    useState<number>(0);
-
-  const [workoutUserTimerSeconds, setWorkoutUserTimerSeconds] =
-    useState<number>(0);
-  const [workoutUserTimerKey, setWorkoutUserTimerKey] = useState<number>(0);
-
-  const exerciseListMemo = React.useMemo(() => exerciseList, []);
 
   const updateLocalStorage = async () => {
     try {
@@ -218,8 +207,9 @@ export function WorkoutPage() {
     setNewWorkoutName(newName);
   };
 
-  const handleNewWorkoutNameSearchChange = (newName: string) => {
-    setNewWorkoutNameSearch(newName);
+  const handleAddSecondsUserTimer = (seconds: number) => {
+    setWorkoutUserTimerSeconds(seconds);
+    setWorkoutUserTimerKey((prevKey: number) => prevKey + 1);
   };
 
   const isWorkoutNotFinished = () => {
@@ -263,11 +253,6 @@ export function WorkoutPage() {
         </Button>
       </Box>
     );
-  };
-
-  const handleAddSecondsUserTimer = (seconds: number) => {
-    setWorkoutUserTimerSeconds(seconds);
-    setWorkoutUserTimerKey((prevKey) => prevKey + 1);
   };
 
   return (
@@ -378,169 +363,20 @@ export function WorkoutPage() {
         </ScrollView>
 
         {isNewWorkoutModalVisible && (
-          <Modal
-            animationPreset={"slide"}
-            style={styles.newWorkoutModal}
-            isOpen={isNewWorkoutModalVisible}
-          >
-            <Box style={styles.newWorkoutModalHeaderContainer}>
-              {/* <Text style={styles.newWorkoutModalTitle}>Exercise list</Text> */}
-              <Box style={styles.newWorkoutNameInputContainer}>
-                <Input
-                  variant="ghost"
-                  placeholder="Workout name"
-                  style={styles.newWorkoutNameInput}
-                  value={newWorkoutName}
-                  onChangeText={(newName) =>
-                    handleNewWorkoutNameChange(newName)
-                  }
-                />
-
-                <Box style={styles.workoutTimerContainer}>
-                  <WorkoutTimer startFromSeconds={workoutTimerSecondsStart} />
-                </Box>
-              </Box>
-
-              <Button
-                variant={"solid"}
-                style={styles.createNewWorkoutButton}
-                onPress={handleSaveNewWorkout}
-                isDisabled={newWorkout?.workoutExercises.length === 0}
-              >
-                <Text style={styles.createNewWorkoutButtonText}>
-                  Finish Workout
-                </Text>
-              </Button>
-            </Box>
-
-            <CountdownCircleTimer
-              size={200}
-              key={workoutUserTimerKey}
-              isPlaying={!!workoutUserTimerSeconds}
-              duration={workoutUserTimerSeconds}
-              colors={["#e73213", "#8c200e", "#9dbeb7", "#7f9993"]}
-              colorsTime={[
-                workoutUserTimerSeconds / 1.5,
-                workoutUserTimerSeconds / 2,
-                workoutUserTimerSeconds / 4,
-                0,
-              ]}
-              onComplete={() => {
-                handleAddSecondsUserTimer(0);
-              }}
-            >
-              {({ remainingTime }: any) => {
-                return remainingTime ? (
-                  <Text style={styles.timerText}>{remainingTime}</Text>
-                ) : (
-                  <React.Fragment>
-                    <Button
-                      variant="ghost"
-                      onPress={() => handleAddSecondsUserTimer(15)}
-                    >
-                      00:15
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onPress={() => handleAddSecondsUserTimer(30)}
-                    >
-                      00:30
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onPress={() => handleAddSecondsUserTimer(60)}
-                    >
-                      01:00
-                    </Button>
-                  </React.Fragment>
-                );
-              }}
-            </CountdownCircleTimer>
-
-            <FlatList
-              style={styles.newWorkoutExerciseList}
-              data={newWorkout?.workoutExercises}
-              renderItem={({ item, index }) => (
-                <CurrentWorkoutExercise
-                  sets={item.sets}
-                  weight={item.weight}
-                  exercise={item.exercise}
-                  reps={item.reps}
-                  key={index}
-                  workoutId={item.workoutId}
-                  exerciseId={item.exerciseId}
-                  handleUpdateExercise={handleUpdateExercise}
-                />
-              )}
-            />
-
-            <Box style={styles.newWorkoutBottomActionsContainer}>
-              <Button onPress={handleExitNewWorkoutModal} variant="secondary">
-                <Text style={styles.exitNewWorkoutModalButtonText}>
-                  Cancel workout
-                </Text>
-              </Button>
-
-              <Button onPress={() => toggleExerciseListModalOpen()}>
-                <Text style={styles.newWorkoutNewExerciseButtonText}>
-                  Add new exercise
-                </Text>
-              </Button>
-            </Box>
-
-            <Modal
-              isOpen={isExerciseListModalOpen}
-              style={styles.exerciseListModal}
-            >
-              <Modal.CloseButton
-                onPress={() => toggleExerciseListModalOpen()}
-              ></Modal.CloseButton>
-              <Box style={styles.exerciseListModalContentContainer}>
-                <Box style={styles.searchForExerciseInputContainer}>
-                  <Input
-                    style={styles.searchForExerciseInput}
-                    placeholder="Seach for exercises"
-                    value={newWorkoutNameSearch}
-                    onChangeText={(searchQuery) =>
-                      handleNewWorkoutNameSearchChange(searchQuery)
-                    }
-                  />
-                </Box>
-
-                {!newWorkoutNameSearch ? (
-                  <FlatList
-                    data={exerciseListMemo}
-                    renderItem={({ item, index }) => (
-                      <ExerciseInputField
-                        key={index}
-                        name={item.name}
-                        handleAddExercise={handleAddExercise}
-                        workoutId={newWorkout?.workoutId || ""}
-                        youtubeLink={item.youtubeLink}
-                      />
-                    )}
-                  ></FlatList>
-                ) : (
-                  <FlatList
-                    data={exerciseListMemo.filter((exercise) => {
-                      return exercise.name
-                        .toLowerCase()
-                        .includes(newWorkoutNameSearch.toLowerCase());
-                    })}
-                    renderItem={({ item, index }) => (
-                      <ExerciseInputField
-                        key={index}
-                        name={item.name}
-                        handleAddExercise={handleAddExercise}
-                        workoutId={newWorkout?.workoutId || ""}
-                        youtubeLink={item.youtubeLink}
-                      />
-                    )}
-                  ></FlatList>
-                )}
-              </Box>
-            </Modal>
-          </Modal>
+          <NewWorkout
+            isNewWorkoutModalVisible={isNewWorkoutModalVisible}
+            newWorkoutName={newWorkoutName}
+            handleNewWorkoutNameChange={handleNewWorkoutNameChange}
+            handleSaveNewWorkout={handleSaveNewWorkout}
+            newWorkout={newWorkout}
+            handleUpdateExercise={handleUpdateExercise}
+            handleExitNewWorkoutModal={handleExitNewWorkoutModal}
+            handleAddExercise={handleAddExercise}
+            handleAddSecondsUserTimer={handleAddSecondsUserTimer}
+            workoutUserTimerSeconds={workoutUserTimerSeconds}
+            workoutUserTimerKey={workoutUserTimerKey}
+            workoutTimerSecondsStart={workoutTimerSecondsStart}
+          />
         )}
 
         <Modal animationPreset={"slide"} isOpen={isWorkoutModalVisible}>
