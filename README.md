@@ -1,4 +1,4 @@
-# GymTrackerFE
+# GymGo
 This is the public repository of the GymGo project from the client side.
 
 <img src="https://github.com/OpariucCristian/GymTrackerFE/blob/master/assets/adaptive-icon.png?raw=true" width="225" title="hover text">
