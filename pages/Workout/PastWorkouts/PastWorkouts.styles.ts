@@ -1,32 +1,11 @@
 import EStyleSheet from "react-native-extended-stylesheet";
 
 const styles = EStyleSheet.create({
-  workoutPageContainer: {
-    backgroundColor: "$backgroundColor",
-    height: "100%",
-  },
   workoutListContainer: {
     backgroundColor: "$backgroundColor",
   },
   workoutList: {
     marginBottom: "10%",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  navbar: {
-    display: "flex",
-    justifyContent: "center",
-    position: "absolute",
-    bottom: 0,
-  },
-  newWorkoutButton: {
-    marginTop: "10%",
-    marginBottom: "2.5%",
-    width: "65%",
   },
   pastWorkoutsTextContainer: {
     backgroundColor: "$backgroundColor",
@@ -40,18 +19,7 @@ const styles = EStyleSheet.create({
     marginLeft: "10%",
     marginTop: "10%",
   },
-  newWorkoutButtonText: {
-    fontSize: 15,
-    color: "#fff",
-    fontWeight: "600",
-  },
-  newWorkoutButtonContainer: {
-    display: "flex",
-    justifyContent: "center",
-    backgroundColor: "$backgroundColor",
-    alignItems: "center",
-    width: "100%",
-  },
+
   workoutHeader: {
     display: "flex",
     justifyContent: "space-between",
@@ -70,14 +38,6 @@ const styles = EStyleSheet.create({
     fontSize: 15,
     color: "#fff",
     fontWeight: "600",
-  },
-  deleteWorkoutButton: {
-    width: "28%",
-  },
-  workoutExercise: {
-    marginTop: "2%",
-    marginLeft: "2%",
-    display: "flex",
   },
   workoutCard: {
     display: "flex",
@@ -136,29 +96,6 @@ const styles = EStyleSheet.create({
     height: "10.8rem",
     marginTop: "60%",
     zIndex: 1,
-  },
-  currentWorkoutInfo: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    flexDirection: "column",
-    width: "100%",
-    marginTop: "13%",
-    marginLeft: "3%",
-    marginBottom: "2%",
-  },
-  currentWorkoutModalTitle: {
-    fontSize: 23,
-    fontWeight: "bold",
-  },
-  currentWorkoutButtonsContainer: {
-    display: "flex",
-    justifyContent: "space-around",
-    alignItems: "center",
-    flexDirection: "row",
-    width: "100%",
-    marginTop: "5%",
-    marginBottom: "3%",
   },
 });
 

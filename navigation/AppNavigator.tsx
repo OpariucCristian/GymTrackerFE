@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import ExercisesPage from "../pages/Exercises";
-import { WorkoutPage } from "../pages/Workout/Workout";
+import WorkoutPage from "../pages/Workout/Workout";
 import LoginPage from "../pages/Login/Login";
 const Stack = createNativeStackNavigator();
 

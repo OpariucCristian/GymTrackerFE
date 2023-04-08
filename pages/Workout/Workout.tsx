@@ -23,8 +23,9 @@ import { theme } from "../../styles/theme";
 import useToggle from "../../hooks/toogle-hook";
 import NewWorkout from "./NewWorkout/NewWorkout";
 import styles from "./Workout.styles";
+import PastWorkouts from "./PastWorkouts/PastWorkouts";
 
-const WorkoutPage = () => {
+function WorkoutPage() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const [workoutList, setWorkoutList] = useState<Workout[]>([]);
@@ -233,197 +234,92 @@ const WorkoutPage = () => {
     updateLocalStorage();
   }, [workoutList]);
 
-  const renderRightActions = (
-    progress: Animated.AnimatedInterpolation<string | number>,
-    workoutId: string
-  ) => {
-    return (
-      <Box
-        style={{
-          alignContent: "center",
-          justifyContent: "center",
-          width: 70,
-        }}
-      >
-        <Button
-          style={styles.deleteWorkoutCardButton}
-          variant="secondary"
-          onPress={(id) => handleDeleteWorkout(workoutId)}
-        >
-          X
-        </Button>
-      </Box>
-    );
-  };
-
   return (
     <>
       <NativeBaseProvider theme={theme}>
-        <Box style={styles.newWorkoutButtonContainer}>
-          <Button
-            variant={"solid"}
-            onPress={() => handleOpenModal()}
-            style={styles.newWorkoutButton}
-          >
-            <Text style={styles.newWorkoutButtonText}>
-              Start a workout from scratch
-            </Text>
-          </Button>
+        <Box style={styles.workoutPageContainer}>
+          <Box style={styles.newWorkoutButtonContainer}>
+            <Button
+              variant={"solid"}
+              onPress={() => handleOpenModal()}
+              style={styles.newWorkoutButton}
+            >
+              <Text style={styles.newWorkoutButtonText}>
+                Start a workout from scratch
+              </Text>
+            </Button>
+          </Box>
+
+          {workoutList.length !== 0 && (
+            <PastWorkouts
+              {...{ workoutList, handleStartWorkout, handleDeleteWorkout }}
+            />
+          )}
+
+          {isNewWorkoutModalVisible && (
+            <NewWorkout
+              {...{
+                isNewWorkoutModalVisible,
+                newWorkoutName,
+                handleNewWorkoutNameChange,
+                handleSaveNewWorkout,
+                newWorkout,
+                handleUpdateExercise,
+                handleExitNewWorkoutModal,
+                handleAddExercise,
+                handleAddSecondsUserTimer,
+                workoutUserTimerSeconds,
+                workoutUserTimerKey,
+                workoutTimerSecondsStart,
+              }}
+            />
+          )}
+
+          <Modal animationPreset={"slide"} isOpen={isWorkoutModalVisible}>
+            <Box style={styles.currentWorkoutInfo}>
+              <Text style={styles.currentWorkoutModalTitle}>
+                {currentWorkout?.workoutName}
+              </Text>
+              <WorkoutTimer />
+            </Box>
+
+            <FlatList
+              data={currentWorkout?.workoutExercises}
+              renderItem={({ item, index }) => (
+                <CurrentWorkoutExercise
+                  sets={item.sets}
+                  weight={item.weight}
+                  exercise={item.exercise}
+                  reps={item.reps}
+                  key={index}
+                  workoutId={item.workoutId}
+                  exerciseId={item.exerciseId}
+                  handleUpdateExercise={handleUpdateExercise}
+                />
+              )}
+            />
+
+            <Box style={styles.currentWorkoutButtonsContainer}>
+              <Button
+                variant="secondary"
+                onPress={toggleIsNewWorkoutModalVisible}
+              >
+                Exit workout
+              </Button>
+
+              <Button
+                variant="solid"
+                isDisabled={isWorkoutNotFinished()}
+                onPress={handleFinishWorkout}
+              >
+                Finish workout
+              </Button>
+            </Box>
+          </Modal>
         </Box>
-
-        {workoutList.length !== 0 && (
-          <Box style={styles.pastWorkoutsTextContainer}>
-            <Text style={styles.pastWorkoutsText}>Your past workouts</Text>
-          </Box>
-        )}
-        <ScrollView style={styles.workoutListContainer}>
-          <Box>
-            {workoutList.length !== 0 &&
-              workoutList?.reverse().map((workout, index) => {
-                const id = workout.workoutId || "";
-                return (
-                  <Swipeable
-                    friction={3}
-                    overshootFriction={50}
-                    renderRightActions={(progress, workoutId) =>
-                      renderRightActions(progress, id)
-                    }
-                    key={index}
-                  >
-                    <Box style={styles.workoutCard}>
-                      <ImageBackground
-                        source={workout.image}
-                        resizeMode="cover"
-                        style={styles.backgroundImage}
-                      >
-                        <View style={styles.darkness}>
-                          <Box style={styles.workoutHeader}>
-                            <Text style={styles.workoutTitle}>{`${
-                              workout?.workoutName
-                                ? workout?.workoutName
-                                : `Workout ${index + 1}`
-                            }`}</Text>
-
-                            <Button
-                              variant={"solid"}
-                              style={styles.startWorkoutButton}
-                              onPress={() => handleStartWorkout(id)}
-                            >
-                              <Text style={styles.startWorkoutButtonText}>
-                                Start
-                              </Text>
-                            </Button>
-                          </Box>
-
-                          <Box style={styles.exercisesContainer}>
-                            <ScrollView
-                              horizontal={true}
-                              style={styles.exercisesContainerScrollable}
-                            >
-                              {workout
-                                ? workout?.workoutExercises.map(
-                                    (exercise, exerciseIndex) => {
-                                      return (
-                                        <Box
-                                          key={exerciseIndex}
-                                          style={styles.exerciseContainer}
-                                        >
-                                          <Text
-                                            style={styles.workoutExerciseTitle}
-                                          >
-                                            {exercise.exercise}
-                                          </Text>
-                                          <Text
-                                            style={
-                                              styles.workoutExerciseDetails
-                                            }
-                                          >
-                                            Sets: {exercise.sets}
-                                          </Text>
-                                          <Text
-                                            style={
-                                              styles.workoutExerciseDetails
-                                            }
-                                          >
-                                            Weight: {exercise.weight} kg {"\n"}
-                                          </Text>
-                                        </Box>
-                                      );
-                                    }
-                                  )
-                                : null}
-                            </ScrollView>
-                          </Box>
-                        </View>
-                      </ImageBackground>
-                    </Box>
-                  </Swipeable>
-                );
-              })}
-          </Box>
-        </ScrollView>
-
-        {isNewWorkoutModalVisible && (
-          <NewWorkout
-            isNewWorkoutModalVisible={isNewWorkoutModalVisible}
-            newWorkoutName={newWorkoutName}
-            handleNewWorkoutNameChange={handleNewWorkoutNameChange}
-            handleSaveNewWorkout={handleSaveNewWorkout}
-            newWorkout={newWorkout}
-            handleUpdateExercise={handleUpdateExercise}
-            handleExitNewWorkoutModal={handleExitNewWorkoutModal}
-            handleAddExercise={handleAddExercise}
-            handleAddSecondsUserTimer={handleAddSecondsUserTimer}
-            workoutUserTimerSeconds={workoutUserTimerSeconds}
-            workoutUserTimerKey={workoutUserTimerKey}
-            workoutTimerSecondsStart={workoutTimerSecondsStart}
-          />
-        )}
-
-        <Modal animationPreset={"slide"} isOpen={isWorkoutModalVisible}>
-          <Box style={styles.currentWorkoutInfo}>
-            <Text style={styles.currentWorkoutModalTitle}>
-              {currentWorkout?.workoutName}
-            </Text>
-            <WorkoutTimer />
-          </Box>
-
-          <FlatList
-            data={currentWorkout?.workoutExercises}
-            renderItem={({ item, index }) => (
-              <CurrentWorkoutExercise
-                sets={item.sets}
-                weight={item.weight}
-                exercise={item.exercise}
-                reps={item.reps}
-                key={index}
-                workoutId={item.workoutId}
-                exerciseId={item.exerciseId}
-                handleUpdateExercise={handleUpdateExercise}
-              />
-            )}
-          />
-
-          <Box style={styles.currentWorkoutButtonsContainer}>
-            <Button
-              variant="secondary"
-              onPress={toggleIsNewWorkoutModalVisible}
-            >
-              Exit workout
-            </Button>
-
-            <Button
-              variant="solid"
-              isDisabled={isWorkoutNotFinished()}
-              onPress={handleFinishWorkout}
-            >
-              Finish workout
-            </Button>
-          </Box>
-        </Modal>
       </NativeBaseProvider>
     </>
   );
-};
+}
 
 export default WorkoutPage;
