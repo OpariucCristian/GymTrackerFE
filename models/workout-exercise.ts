@@ -1,8 +1,8 @@
+import { ExerciseSet } from "./exercise-set";
+
 export interface WorkoutExercise {
   exercise: string;
-  sets: number | undefined;
-  weight: number | undefined;
-  reps: number | undefined;
+  sets: ExerciseSet[];
   exerciseId: string;
   workoutId: string;
   isExerciseCompleted?: boolean;
