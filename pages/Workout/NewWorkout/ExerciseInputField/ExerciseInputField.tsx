@@ -1,24 +1,13 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import { Box, Button, Input } from "native-base";
-import Dropdown from "../../../components/dropdown/Dropdown";
-import ExerciseCardProps from "../../../models/PropModels/ExerciseCardProps";
+import Dropdown from "../../../../components/dropdown/Dropdown";
+import ExerciseCardProps from "../../../../models/PropModels/ExerciseCardProps";
 import styles from "./ExerciseInputField.styles";
-import { generateUUID } from "../../../utils/uuid";
+import { generateUUID } from "../../../../utils/uuid";
 
 const ExerciseCard = (props: ExerciseCardProps) => {
   const { name, handleAddExercise, workoutId, youtubeLink } = props;
-
-  const [weight, setWeight] = useState<number>();
-  const [reps, setReps] = useState<number>();
-
-  const handleWeightChange = (weight: number) => {
-    setWeight(weight);
-  };
-
-  const handleRepsChange = (reps: number) => {
-    setReps(reps);
-  };
 
   return (
     <View style={styles.cardContainer}>

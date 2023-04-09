@@ -11,11 +11,7 @@ export default interface NewWorkoutProps {
     | null
     | undefined;
   newWorkout: Workout | null | undefined;
-  handleUpdateExercise: (
-    isExerciseCompleted: boolean,
-    updatedExercise?: WorkoutExercise | undefined,
-    updatedExerciseId?: string | undefined
-  ) => void;
+  handleUpdateExercise: (updatedExercise?: WorkoutExercise | undefined) => void;
   handleExitNewWorkoutModal:
     | ((event: GestureResponderEvent) => void)
     | null

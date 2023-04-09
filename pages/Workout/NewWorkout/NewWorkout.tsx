@@ -1,11 +1,11 @@
 import { Box, Button, Modal, Text, Input, FlatList } from "native-base";
 import React, { useState } from "react";
-import WorkoutTimer from "../WorkoutTimer/WorkoutTimer";
+import WorkoutTimer from "./WorkoutTimer/WorkoutTimer";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import NewWorkoutExercise from "./NewWorkoutExercise";
 import useToggle from "../../../hooks/toogle-hook";
 import exerciseList from "../../../constants/exerciseList";
-import ExerciseInputField from "../ExerciseInputField";
+import ExerciseInputField from "./ExerciseInputField";
 import NewWorkoutProps from "../../../models/PropModels/NewWorkoutProps";
 import styles from "./NewWorkout.styles";
 
@@ -35,6 +35,13 @@ const NewWorkout = (props: NewWorkoutProps) => {
   const handleNewWorkoutNameSearchChange = (newName: string) => {
     setNewWorkoutNameSearch(newName);
   };
+
+  const isNewWorkoutFinished = () => {
+    const isFinished = newWorkout?.workoutExercises?.every(
+      (exercise) => exercise.isExerciseCompleted
+    );
+    return isFinished;
+  };
   return (
     <React.Fragment>
       <Modal
@@ -61,7 +68,10 @@ const NewWorkout = (props: NewWorkoutProps) => {
             variant={"solid"}
             style={styles.createNewWorkoutButton}
             onPress={handleSaveNewWorkout}
-            isDisabled={newWorkout?.workoutExercises?.length === 0}
+            isDisabled={
+              newWorkout?.workoutExercises?.length === 0 ||
+              !isNewWorkoutFinished()
+            }
           >
             <Text style={styles.createNewWorkoutButtonText}>
               Finish Workout

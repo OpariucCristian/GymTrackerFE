@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { ExerciseSet } from "../../../../../models/exercise-set";
 import { Box, Checkbox, Input, Text } from "native-base";
 import styles from "../NewWorkoutExercise.styles";
+
 interface CurrentWorkoutExerciseSetProps {
   set: ExerciseSet;
-  updateExercise: (isExerciseCompleted: boolean) => void;
+  updateSet: (updatedSet: ExerciseSet) => void;
 }
-const CurrentWorkoutExerciseSet = (props: CurrentWorkoutExerciseSetProps) => {
-  const { set, updateExercise } = props;
+const NewWorkoutExerciseSet = (props: CurrentWorkoutExerciseSetProps) => {
+  const { set, updateSet } = props;
 
   const [updatedWeight, setUpdatedWeight] = useState<string>();
   const [updatedReps, setUpdatedReps] = useState<string>();
@@ -31,7 +32,13 @@ const CurrentWorkoutExerciseSet = (props: CurrentWorkoutExerciseSetProps) => {
   }, []);
 
   useEffect(() => {
-    updateExercise(isChecked);
+    const updatedSet: ExerciseSet = {
+      setId: set.setId,
+      weight: Number(updatedWeight),
+      reps: Number(updatedReps),
+      isSetCompleted: isChecked,
+    };
+    updateSet(updatedSet);
   }, [isChecked]);
   return (
     <Box style={styles.exerciseControlsContainer}>
@@ -73,4 +80,4 @@ const CurrentWorkoutExerciseSet = (props: CurrentWorkoutExerciseSetProps) => {
   );
 };
 
-export default CurrentWorkoutExerciseSet;
+export default NewWorkoutExerciseSet;

@@ -4,9 +4,10 @@ import { Animated, ImageBackground, View } from "react-native";
 import { ScrollView, Swipeable } from "react-native-gesture-handler";
 import { Workout } from "../../../models/workout-list";
 import styles from "./PastWorkouts.styles";
+import { WorkoutExercise } from "../../../models/workout-exercise";
 
 interface PasWorkoutsProps {
-  workoutList: any;
+  workoutList: Workout[];
   handleStartWorkout: (id: string) => void;
   handleDeleteWorkout: (id: string) => void;
 }
@@ -88,7 +89,10 @@ const PastWorkouts = (props: PasWorkoutsProps) => {
                           >
                             {workout
                               ? workout?.workoutExercises.map(
-                                  (exercise, exerciseIndex) => {
+                                  (
+                                    exercise: WorkoutExercise,
+                                    exerciseIndex: number
+                                  ) => {
                                     return (
                                       <Box
                                         key={exerciseIndex}
@@ -102,13 +106,13 @@ const PastWorkouts = (props: PasWorkoutsProps) => {
                                         <Text
                                           style={styles.workoutExerciseDetails}
                                         >
-                                          Sets: {exercise.sets}
+                                          Sets: {exercise.sets.length}
                                         </Text>
-                                        <Text
+                                        {/* <Text
                                           style={styles.workoutExerciseDetails}
                                         >
                                           Weight: {exercise.weight} kg {"\n"}
-                                        </Text>
+                                        </Text> */}
                                       </Box>
                                     );
                                   }
