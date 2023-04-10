@@ -87,7 +87,7 @@ const styles = EStyleSheet.create({
     borderRadius: 10,
   },
   darkness: {
-    backgroundColor: "rgba(0,0,0,0.15)",
+    backgroundColor: "rgba(0,0,0,0.2)",
     width: "100%",
     height: 200,
   },

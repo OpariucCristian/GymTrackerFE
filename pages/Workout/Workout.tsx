@@ -1,29 +1,21 @@
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { RootStackParamList } from "../../models/root-stack-param-list";
-import { View, ImageBackground, Animated } from "react-native";
-import { ScrollView, Swipeable } from "react-native-gesture-handler";
-import { Workout } from "../../models/workout-list-interface";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Workout } from "../../models/workout-list";
 import { generateUUID } from "../../utils/uuid";
-import {
-  Box,
-  Button,
-  FlatList,
-  NativeBaseProvider,
-  Text,
-  Modal,
-} from "native-base";
+import { Box, Button, NativeBaseProvider, Text } from "native-base";
 import { getRandomWorkoutImage } from "../../assets/workout-backgrounds/Images";
-import CurrentWorkoutExercise from "./CurrentWorkoutExercise";
 import { WorkoutExercise } from "../../models/workout-exercise";
-import WorkoutTimer from "./WorkoutTimer/WorkoutTimer";
 import { api } from "../../api/api";
 import { theme } from "../../styles/theme";
 import useToggle from "../../hooks/toogle-hook";
-import NewWorkout from "./NewWorkout/NewWorkout";
+import NewWorkout from "./NewWorkout";
 import styles from "./Workout.styles";
 import PastWorkouts from "./PastWorkouts/PastWorkouts";
+import {
+  getWorkoutListFromLocalStorage,
+  updateLocalStorageWorkoutList,
+} from "./Workout.utils";
 
 function WorkoutPage() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -33,75 +25,39 @@ function WorkoutPage() {
   const [newWorkout, setNewWorkout] = useState<Workout | null>();
   const [newWorkoutName, setNewWorkoutName] = useState<string>("");
 
-  const [currentWorkout, setCurrentWorkout] = useState<Workout>();
-
   const [workoutTimerSecondsStart, setWorkoutTimerSecondsStart] =
     useState<number>(0);
   const [workoutUserTimerSeconds, setWorkoutUserTimerSeconds] =
     useState<number>(0);
   const [workoutUserTimerKey, setWorkoutUserTimerKey] = useState<number>(0);
 
-  const [
-    isNewWorkoutModalVisible,
-    toggleIsNewWorkoutModalVisible,
-    setIsNewWorkoutModalVisible,
-  ] = useToggle(false);
+  const [isNewWorkoutModalVisible, _, setIsNewWorkoutModalVisible] =
+    useToggle(false);
 
-  const [isWorkoutModalVisible, , setIsWorkoutModalVisible] = useToggle(false);
-
-  const updateLocalStorage = async () => {
-    try {
-      const jsonValue = JSON.stringify(workoutList);
-      await AsyncStorage.setItem("workoutList", jsonValue);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getFromLocalStorage = async () => {
-    if (workoutList.length === 0) {
-      try {
-        const jsonValue = await AsyncStorage.getItem("workoutList");
-        jsonValue != null ? setWorkoutList(JSON.parse(jsonValue)) : null;
-      } catch (e) {
-        console.log(e);
-      }
+  const handleGetWorkoutListFromLocalStorage = async () => {
+    const savedWorkoutList = await getWorkoutListFromLocalStorage(workoutList);
+    if (savedWorkoutList) {
+      setWorkoutList(savedWorkoutList);
     }
   };
 
   const handleAddExercise = (
-    name: string,
-    sets: number | undefined,
-    weight: number | undefined,
-    reps: number | undefined,
+    newExercise: WorkoutExercise,
     workoutId: string
   ) => {
-    const newExercise = {
-      exercise: name,
-      sets,
-      weight,
-      reps,
-      workoutId,
-      exerciseId: generateUUID(),
-      isExerciseCompleted: false,
-    };
-
-    if (newWorkout && sets && weight) {
+    console.log(newExercise);
+    if (newWorkout) {
       setNewWorkout({
         ...newWorkout,
-        workoutId,
+        workoutId: workoutId,
         workoutExercises: [...newWorkout.workoutExercises, newExercise],
       });
     }
   };
 
-  const handleUpdateExercise = (
-    isExerciseCompleted: boolean,
-    updatedExercise?: WorkoutExercise,
-    updatedExerciseId?: string
-  ) => {
-    if (currentWorkout && updatedExercise && isExerciseCompleted) {
-      const updatedWorkoutExercises = currentWorkout.workoutExercises.map(
+  const handleUpdateExercise = (updatedExercise?: WorkoutExercise) => {
+    if (newWorkout && updatedExercise) {
+      const updatedWorkoutExercises = newWorkout.workoutExercises.map(
         (exercise) => {
           if (exercise.exerciseId === updatedExercise.exerciseId) {
             return updatedExercise;
@@ -111,25 +67,8 @@ function WorkoutPage() {
         }
       );
 
-      setCurrentWorkout({
-        ...currentWorkout,
-        workoutExercises: updatedWorkoutExercises,
-      });
-    } else if (currentWorkout && updatedExerciseId && !isExerciseCompleted) {
-      const updatedWorkoutExercises = currentWorkout.workoutExercises.map(
-        (exercise) => {
-          if (exercise.exerciseId === updatedExerciseId) {
-            return {
-              ...exercise,
-              isExerciseCompleted: false,
-            };
-          } else {
-            return exercise;
-          }
-        }
-      );
-      setCurrentWorkout({
-        ...currentWorkout,
+      setNewWorkout({
+        ...newWorkout,
         workoutExercises: updatedWorkoutExercises,
       });
     }
@@ -138,27 +77,11 @@ function WorkoutPage() {
   const handleStartWorkout = (workoutId: string) => {
     workoutList.forEach((workout) => {
       if (workout.workoutId === workoutId) {
-        setCurrentWorkout(workout);
+        setNewWorkout(workout);
       }
     });
 
-    setIsWorkoutModalVisible(true);
-  };
-
-  const handleFinishWorkout = () => {
-    if (currentWorkout) {
-      const updatedWorkoutList = workoutList.map((workout) => {
-        if (workout.workoutId === currentWorkout.workoutId) {
-          return currentWorkout;
-        } else {
-          return workout;
-        }
-      });
-      if (updatedWorkoutList.length !== 0) {
-        setWorkoutList(updatedWorkoutList);
-      }
-    }
-    setIsWorkoutModalVisible(false);
+    setIsNewWorkoutModalVisible(true);
   };
 
   const handleDeleteWorkout = async (workoutId: string) => {
@@ -185,19 +108,35 @@ function WorkoutPage() {
     setIsNewWorkoutModalVisible(false);
 
     if (newWorkout?.workoutExercises.length !== 0 && newWorkout) {
-      const randomImage = getRandomWorkoutImage();
+      const doesWorkoutExist = workoutList.find((workout) => {
+        return workout.workoutId === newWorkout.workoutId;
+      });
 
-      const updatedNewWorkout = {
-        ...newWorkout,
-        image: randomImage,
-        workoutName: newWorkoutName || `Workout ${workoutList.length + 1}`,
-      };
+      if (doesWorkoutExist) {
+        const updatedWorkoutList = workoutList.map((workout) => {
+          if (workout.workoutId === newWorkout.workoutId) {
+            return newWorkout;
+          } else {
+            return workout;
+          }
+        });
 
-      setWorkoutList([...workoutList, updatedNewWorkout]);
+        setWorkoutList([...updatedWorkoutList]);
+      } else {
+        const randomImage = getRandomWorkoutImage();
+
+        const updatedNewWorkout = {
+          ...newWorkout,
+          image: randomImage,
+          workoutName: newWorkoutName || `Workout ${workoutList.length + 1}`,
+        };
+
+        setWorkoutList([...workoutList, updatedNewWorkout]);
+      }
+
+      setNewWorkout(null);
+      setNewWorkoutName("");
     }
-
-    setNewWorkout(null);
-    setNewWorkoutName("");
   };
 
   const handleOpenModal = () => {
@@ -214,24 +153,12 @@ function WorkoutPage() {
     setWorkoutUserTimerKey((prevKey: number) => prevKey + 1);
   };
 
-  const isWorkoutNotFinished = () => {
-    if (currentWorkout) {
-      const areAllExercisesCompleted = currentWorkout.workoutExercises.every(
-        (exercise) => {
-          return exercise.isExerciseCompleted;
-        }
-      );
-
-      return !areAllExercisesCompleted;
-    }
-  };
-
   useEffect(() => {
-    getFromLocalStorage();
+    handleGetWorkoutListFromLocalStorage();
   }, []);
 
   useEffect(() => {
-    updateLocalStorage();
+    updateLocalStorageWorkoutList(workoutList);
   }, [workoutList]);
 
   return (
@@ -274,48 +201,6 @@ function WorkoutPage() {
               }}
             />
           )}
-
-          <Modal animationPreset={"slide"} isOpen={isWorkoutModalVisible}>
-            <Box style={styles.currentWorkoutInfo}>
-              <Text style={styles.currentWorkoutModalTitle}>
-                {currentWorkout?.workoutName}
-              </Text>
-              <WorkoutTimer />
-            </Box>
-
-            <FlatList
-              data={currentWorkout?.workoutExercises}
-              renderItem={({ item, index }) => (
-                <CurrentWorkoutExercise
-                  sets={item.sets}
-                  weight={item.weight}
-                  exercise={item.exercise}
-                  reps={item.reps}
-                  key={index}
-                  workoutId={item.workoutId}
-                  exerciseId={item.exerciseId}
-                  handleUpdateExercise={handleUpdateExercise}
-                />
-              )}
-            />
-
-            <Box style={styles.currentWorkoutButtonsContainer}>
-              <Button
-                variant="secondary"
-                onPress={toggleIsNewWorkoutModalVisible}
-              >
-                Exit workout
-              </Button>
-
-              <Button
-                variant="solid"
-                isDisabled={isWorkoutNotFinished()}
-                onPress={handleFinishWorkout}
-              >
-                Finish workout
-              </Button>
-            </Box>
-          </Modal>
         </Box>
       </NativeBaseProvider>
     </>

@@ -1,5 +1,5 @@
 import { GestureResponderEvent } from "react-native";
-import { Workout } from "../workout-list-interface";
+import { Workout } from "../workout-list";
 import { WorkoutExercise } from "../workout-exercise";
 
 export default interface NewWorkoutProps {
@@ -11,22 +11,12 @@ export default interface NewWorkoutProps {
     | null
     | undefined;
   newWorkout: Workout | null | undefined;
-  handleUpdateExercise: (
-    isExerciseCompleted: boolean,
-    updatedExercise?: WorkoutExercise | undefined,
-    updatedExerciseId?: string | undefined
-  ) => void;
+  handleUpdateExercise: (updatedExercise?: WorkoutExercise | undefined) => void;
   handleExitNewWorkoutModal:
     | ((event: GestureResponderEvent) => void)
     | null
     | undefined;
-  handleAddExercise: (
-    name: string,
-    sets: number | undefined,
-    weight: number | undefined,
-    reps: number | undefined,
-    workoutId: string
-  ) => void;
+  handleAddExercise: (exercise: WorkoutExercise, workoutId: string) => void;
   workoutUserTimerSeconds: number;
   workoutUserTimerKey: React.Key | null | undefined;
   workoutTimerSecondsStart: number | undefined;
