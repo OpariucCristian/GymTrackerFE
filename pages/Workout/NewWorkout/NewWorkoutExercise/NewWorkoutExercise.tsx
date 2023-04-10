@@ -55,11 +55,20 @@ const NewWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
     <React.Fragment>
       <Box style={styles.exerciseContainer}>
         <Text style={styles.exerciseName}>{exercise.exercise}</Text>
+        <Box style={styles.exerciseSetsInfo}>
+          <Text style={styles.exerciseControlText}>Set</Text>
+          <Text style={styles.exerciseControlText}>Weight</Text>
+          <Text style={styles.exerciseControlText}>Reps</Text>
+        </Box>
 
-        {exercise.sets.map((set: ExerciseSet) => {
+        {exercise.sets.map((set: ExerciseSet, setIndex: number) => {
           return (
-            <Box style={styles.setContainer}>
-              <NewWorkoutExerciseSet set={set} updateSet={updateSet} />
+            <Box style={styles.setContainer} key={setIndex}>
+              <NewWorkoutExerciseSet
+                set={set}
+                updateSet={updateSet}
+                setNumber={setIndex + 1}
+              />
             </Box>
           );
         })}

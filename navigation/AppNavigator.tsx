@@ -7,22 +7,9 @@ const Stack = createNativeStackNavigator();
 
 function AppNavigator() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       {/* <Stack.Screen name={"Login"} component={LoginPage} /> */}
-      <Stack.Screen
-        name={"Workout"}
-        component={WorkoutPage}
-        options={{
-          title: "Workout",
-          headerStyle: {
-            backgroundColor: "#2A2A31",
-          },
-          headerTintColor: "#f4511e",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-        }}
-      />
+      <Stack.Screen name={"Workout"} component={WorkoutPage} />
     </Stack.Navigator>
   );
 }

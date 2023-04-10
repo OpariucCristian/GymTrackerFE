@@ -4,6 +4,7 @@ const styles = EStyleSheet.create({
   workoutPageContainer: {
     backgroundColor: "$backgroundColor",
     height: "100%",
+    paddingTop: "15%",
   },
   workoutListContainer: {
     backgroundColor: "$backgroundColor",
