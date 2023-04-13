@@ -44,7 +44,7 @@ const NewWorkoutExerciseSet = (props: CurrentWorkoutExerciseSetProps) => {
   return (
     <Box style={styles.exerciseControlsContainer}>
       <Box style={styles.exerciseInfoInputContainer}>
-        <Box>
+        <Box style={styles.exerciseInputContainer}>
           <Text style={styles.inputField}>{setNumber}</Text>
         </Box>
 
@@ -74,15 +74,16 @@ const NewWorkoutExerciseSet = (props: CurrentWorkoutExerciseSetProps) => {
           />
         </Box>
       </Box>
-
-      <Checkbox
-        size="sm"
-        isChecked={isChecked}
-        isDisabled={!updatedWeight || !updatedReps}
-        value={"test"}
-        accessibilityLabel={"Checkbox"}
-        onChange={handleOnCheck}
-      />
+      <Box style={styles.checkboxContainer}>
+        <Checkbox
+          size="sm"
+          isChecked={isChecked}
+          isDisabled={!updatedWeight || !updatedReps}
+          value={"exerciseComplete"}
+          accessibilityLabel={"Checkbox"}
+          onChange={handleOnCheck}
+        />
+      </Box>
     </Box>
   );
 };

@@ -4,23 +4,14 @@ const styles = EStyleSheet.create({
   exerciseContainer: {
     color: "white",
     padding: 10,
-    margin: 10,
+
     marginTop: 20,
     borderRadius: 10,
     shadowColor: "#000",
-    width: "90%",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    width: "100%",
   },
   exerciseControlsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 5,
+    marginTop: "5%",
   },
   exerciseName: {
     fontSize: 15,
@@ -30,6 +21,7 @@ const styles = EStyleSheet.create({
   exerciseControlText: {
     color: "white",
     fontWeight: "600",
+    width: "3.5rem",
   },
   inputField: {
     color: "white",
@@ -38,9 +30,16 @@ const styles = EStyleSheet.create({
   },
   exerciseSetsInfo: {
     display: "flex",
-    width: "80%",
+    width: "87%",
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
+
+    // backgroundColor: "grey",
+    // borderWidth: 5,
+  },
+  checkboxContainer: {
+    width: "20%",
   },
 });
 

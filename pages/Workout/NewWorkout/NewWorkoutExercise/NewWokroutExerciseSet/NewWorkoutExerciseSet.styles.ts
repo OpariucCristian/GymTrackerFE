@@ -19,9 +19,10 @@ const styles = EStyleSheet.create({
   },
   exerciseControlsContainer: {
     flexDirection: "row",
-    // justifyContent: "space-between",
-    // marginTop: 5,
-    marginLeft: "3%",
+
+    display: "flex",
+    whidth: "100%",
+    justifyContent: "space-between",
   },
   exerciseName: {
     fontSize: 15,
@@ -35,27 +36,25 @@ const styles = EStyleSheet.create({
   inputField: {
     color: "white",
     fontWeight: "600",
-    textAlign: "center",
   },
   exerciseControlContainer: {
     display: "flex",
-    alignItems: "space-around",
-    justifyContent: "center",
   },
   exerciseInfoInputContainer: {
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
     width: "80%",
-    gap: "4.2rem",
-    // gap: "-1rem",
-    // height: "100%",
-    // marginTop: "5%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 
   exerciseInputContainer: {
-    width: "3rem",
+    width: "3.5rem",
+    // backgroundColor: "grey",
+    // borderWidth: 5,
+  },
+  workoutExerciseSetContainer: {
+    marginTop: "5%",
   },
 });
 
