@@ -1,60 +1,59 @@
 import EStyleSheet from "react-native-extended-stylesheet";
 
 const styles = EStyleSheet.create({
-  exerciseContainer: {
-    color: "white",
-    padding: 10,
-    margin: 10,
-    marginTop: 20,
-    borderRadius: 10,
-    shadowColor: "#000",
-    width: "90%",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
   exerciseControlsContainer: {
     flexDirection: "row",
-
     display: "flex",
-    whidth: "100%",
-    justifyContent: "space-between",
-  },
-  exerciseName: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "white",
-  },
-  exerciseControlText: {
-    color: "white",
-    fontWeight: "600",
+    width: "100%",
+    marginTop: "2.5%",
   },
   inputField: {
     color: "white",
     fontWeight: "600",
+    borderColor: "red",
   },
   exerciseControlContainer: {
     display: "flex",
   },
   exerciseInfoInputContainer: {
     display: "flex",
-    width: "80%",
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
 
   exerciseInputContainer: {
-    width: "3.5rem",
-    // backgroundColor: "grey",
-    // borderWidth: 5,
+    width: "3.6rem",
+    height: "auto",
+  },
+  checkboxContainer: {
+    height: "auto",
   },
   workoutExerciseSetContainer: {
     marginTop: "5%",
+  },
+  test: {
+    backgroundColor: "#d3d3d3",
+  },
+  exerciseInputStylesText: {
+    color: "red",
+    fontWeight: "600",
+    width: "3.5rem",
+    paddingRight: "0.3rem",
+  },
+  inputFieldLabelCheckboxText: {
+    color: "white",
+    fontWeight: "600",
+    marginBottom: "0.4rem",
+  },
+  inputFieldLabel: {
+    alignSelf: "center",
+    textAlign: "center",
+  },
+  inputFieldLabelText: {
+    color: "white",
+    fontWeight: "600",
   },
 });
 

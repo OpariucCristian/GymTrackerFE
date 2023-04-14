@@ -55,26 +55,23 @@ const NewWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
     <React.Fragment>
       <Text style={styles.exerciseName}>{exercise.exercise}</Text>
       <Box style={styles.exerciseContainer}>
-        <Box style={styles.exerciseSetsInfo}>
-          <Text style={styles.exerciseControlText}>Set</Text>
-          <Text style={styles.exerciseControlText}>Weight</Text>
-          <Text style={styles.exerciseControlText}>Reps</Text>
-        </Box>
-
-        <Box style={styles.workoutExerciseSetContainer}>
-          {exercise.sets.map((set: ExerciseSet, setIndex: number) => {
-            return (
-              <NewWorkoutExerciseSet
-                key={setIndex}
-                set={set}
-                updateSet={updateSet}
-                setNumber={setIndex + 1}
-              />
-            );
-          })}
-        </Box>
+        {exercise.sets.map((set: ExerciseSet, setIndex: number) => {
+          const isFirstSet = setIndex === 0;
+          return (
+            <NewWorkoutExerciseSet
+              key={setIndex}
+              set={set}
+              updateSet={updateSet}
+              setNumber={setIndex + 1}
+              isFirstSet={isFirstSet}
+            />
+          );
+        })}
       </Box>
-      <Button onPress={() => addEmptySet()}>Add new set</Button>
+
+      <Button style={styles.addNewSetButton} onPress={() => addEmptySet()}>
+        <Text style={styles.addNewSetButtonText}>Add new set</Text>
+      </Button>
     </React.Fragment>
   );
 };
