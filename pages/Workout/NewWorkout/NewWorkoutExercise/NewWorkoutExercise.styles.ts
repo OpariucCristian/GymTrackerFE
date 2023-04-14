@@ -34,9 +34,6 @@ const styles = EStyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-
-    // backgroundColor: "grey",
-    // borderWidth: 5,
   },
   checkboxContainer: {
     width: "20%",
