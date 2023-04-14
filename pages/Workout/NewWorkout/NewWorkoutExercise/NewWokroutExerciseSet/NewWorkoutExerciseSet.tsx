@@ -121,7 +121,6 @@ const NewWorkoutExerciseSet = (props: CurrentWorkoutExerciseSetProps) => {
               </FormControl.Label>
             )}
             <Checkbox
-              style={styles.test}
               size="sm"
               isChecked={isChecked}
               isDisabled={!updatedWeight || !updatedReps}

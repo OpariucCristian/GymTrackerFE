@@ -33,9 +33,7 @@ const styles = EStyleSheet.create({
   workoutExerciseSetContainer: {
     marginTop: "5%",
   },
-  test: {
-    backgroundColor: "#d3d3d3",
-  },
+
   exerciseInputStylesText: {
     color: "red",
     fontWeight: "600",
