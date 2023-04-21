@@ -19,7 +19,6 @@ const styles = EStyleSheet.create({
     marginLeft: "10%",
     marginTop: "10%",
   },
-
   workoutHeader: {
     display: "flex",
     justifyContent: "space-between",
@@ -78,6 +77,7 @@ const styles = EStyleSheet.create({
   exerciseContainer: {
     color: "white",
     marginLeft: "1rem",
+    marginTop: "1rem",
   },
   backgroundImage: {
     position: "relative",

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ExerciseSet } from "../../../../../models/exercise-set";
-import { Box, Center, Checkbox, FormControl, Input, Text } from "native-base";
+import { Box, Checkbox, FormControl, Input, Text } from "native-base";
 import styles from "./NewWorkoutExerciseSet.styles";
+import * as Haptics from "expo-haptics";
 
 interface CurrentWorkoutExerciseSetProps {
   set: ExerciseSet;
@@ -16,6 +17,8 @@ const NewWorkoutExerciseSet = (props: CurrentWorkoutExerciseSetProps) => {
   const [updatedReps, setUpdatedReps] = useState<string>();
   const [isChecked, setIsChecked] = useState<boolean>(false);
 
+  const isDoubleVibration = useRef(false);
+
   const handleWeightChange = (weight: string): void => {
     setUpdatedWeight(weight);
   };
@@ -26,6 +29,10 @@ const NewWorkoutExerciseSet = (props: CurrentWorkoutExerciseSetProps) => {
 
   const handleOnCheck = (): void => {
     setIsChecked(!isChecked);
+    isDoubleVibration.current = !isDoubleVibration.current;
+    isDoubleVibration.current
+      ? Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+      : Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   useEffect(() => {

@@ -41,6 +41,16 @@ const styles = EStyleSheet.create({
     marginLeft: "10%",
     marginTop: "10%",
   },
+  pastWorkoutsTextInfo: {
+    fontSize: 15,
+    color: "#fff",
+    fontWeight: "500",
+    marginLeft: 50,
+    marginTop: 25,
+    width: "80%",
+
+    lineHeight: 25,
+  },
   newWorkoutButtonText: {
     fontSize: 15,
     color: "#fff",

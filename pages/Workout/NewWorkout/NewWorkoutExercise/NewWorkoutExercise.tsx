@@ -8,7 +8,7 @@ import { ExerciseSet } from "../../../../models/exercise-set";
 import { generateUUID } from "../../../../utils/uuid";
 
 const NewWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
-  const { exercise, handleUpdateExercise } = props;
+  const { exercise, handleUpdateExercise, handleDeleteExercise } = props;
 
   const addEmptySet = (): void => {
     const emptySet: ExerciseSet = {
@@ -22,7 +22,7 @@ const NewWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
       exercise: exercise.exercise,
       workoutId: exercise.workoutId,
       exerciseId: exercise.exerciseId,
-      isExerciseCompleted: exercise.isExerciseCompleted,
+      isExerciseCompleted: false,
       sets: [...exercise.sets, emptySet],
     };
 
@@ -38,22 +38,33 @@ const NewWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
       }
     });
 
-    const areSetsCompleted = updatedSets.every((s) => s.isSetCompleted);
-
     const updatedExercise: WorkoutExercise = {
       exercise: exercise.exercise,
       workoutId: exercise.workoutId,
       exerciseId: exercise.exerciseId,
-      isExerciseCompleted: areSetsCompleted,
+      isExerciseCompleted: exercise.isExerciseCompleted,
       sets: updatedSets,
     };
 
     handleUpdateExercise(updatedExercise);
   };
 
+  const handleDeleteExercisePress = (): void => {
+    handleDeleteExercise(exercise.exerciseId);
+  };
+
   return (
     <React.Fragment>
-      <Text style={styles.exerciseName}>{exercise.exercise}</Text>
+      <Box style={styles.exerciseNameContainer}>
+        <Text style={styles.exerciseName}>{exercise.exercise}</Text>
+        <Button
+          variant="ghost"
+          colorScheme="primary"
+          onPress={handleDeleteExercisePress}
+        >
+          X
+        </Button>
+      </Box>
       <Box style={styles.exerciseContainer}>
         {exercise.sets.map((set: ExerciseSet, setIndex: number) => {
           const isFirstSet = setIndex === 0;

@@ -14,15 +14,6 @@ const styles = EStyleSheet.create({
     position: "absolute",
     bottom: 0,
   },
-  cardContainer: {
-    flex: 1,
-    width: "100%",
-
-    justifyContent: "space-between",
-    flexDirection: "row",
-    padding: 4,
-    paddingHorizontal: 10,
-  },
   inputFieldContainer: {
     width: "4rem",
   },
@@ -37,21 +28,37 @@ const styles = EStyleSheet.create({
     width: "25%",
   },
 
-  dropDownContentContainer: {
+  contentContainer: {
     display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  workoutControlsContainer: {
-    display: "flex",
+    backgroundColor: "#fff",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    padding: 4,
-    paddingHorizontal: 10,
+
+    marginVertical: 5,
+    paddingVertical: 5,
+    borderRadius: 5,
   },
+  workoutControlsContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "30%",
+    gap: 10,
+  },
+  exerciseInputFieldContainer: {
+    marginHorizontal: 3,
+    borderRadius: 5,
+  },
+
+  exerciseText: {
+    flex: 1,
+    fontWeight: "500",
+    marginLeft: 5,
+  },
+  youtubeIcon: { marginRight: 10, marginTop: 10 },
 });
 
 export default styles;

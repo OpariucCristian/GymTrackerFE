@@ -16,13 +16,14 @@ import {
   getWorkoutListFromLocalStorage,
   updateLocalStorageWorkoutList,
 } from "./Workout.utils";
+import * as Haptics from "expo-haptics";
 
 function WorkoutPage() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const [workoutList, setWorkoutList] = useState<Workout[]>([]);
 
-  const [newWorkout, setNewWorkout] = useState<Workout | null>();
+  const [newWorkout, setNewWorkout] = useState<Workout | null | undefined>();
   const [newWorkoutName, setNewWorkoutName] = useState<string>("");
 
   const [workoutTimerSecondsStart, setWorkoutTimerSecondsStart] =
@@ -45,7 +46,6 @@ function WorkoutPage() {
     newExercise: WorkoutExercise,
     workoutId: string
   ) => {
-    console.log(newExercise);
     if (newWorkout) {
       setNewWorkout({
         ...newWorkout,
@@ -57,10 +57,17 @@ function WorkoutPage() {
 
   const handleUpdateExercise = (updatedExercise?: WorkoutExercise) => {
     if (newWorkout && updatedExercise) {
+      let isExerciseNotCompleted = updatedExercise.sets.some(
+        (s) => s.isSetCompleted === false
+      );
+
       const updatedWorkoutExercises = newWorkout.workoutExercises.map(
         (exercise) => {
           if (exercise.exerciseId === updatedExercise.exerciseId) {
-            return updatedExercise;
+            return {
+              ...updatedExercise,
+              isExerciseCompleted: !isExerciseNotCompleted,
+            };
           } else {
             return exercise;
           }
@@ -74,12 +81,30 @@ function WorkoutPage() {
     }
   };
 
+  const handleDeleteExercise = (exerciseId: string) => {
+    if (newWorkout) {
+      const updatedWorkoutExercises = newWorkout.workoutExercises.filter(
+        (exercise) => {
+          return exercise.exerciseId !== exerciseId;
+        }
+      );
+
+      setNewWorkout({
+        ...newWorkout,
+        workoutExercises: updatedWorkoutExercises,
+      });
+    }
+  };
+
   const handleStartWorkout = (workoutId: string) => {
-    workoutList.forEach((workout) => {
-      if (workout.workoutId === workoutId) {
-        setNewWorkout(workout);
-      }
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    const newCurrentWorkout = workoutList.find((workout) => {
+      return workout.workoutId === workoutId;
     });
+
+    if (newCurrentWorkout) {
+      setNewWorkout(newCurrentWorkout);
+    }
 
     setIsNewWorkoutModalVisible(true);
   };
@@ -104,18 +129,26 @@ function WorkoutPage() {
     setIsNewWorkoutModalVisible(false);
   };
 
-  const handleSaveNewWorkout = () => {
+  const handleSaveNewWorkout = (
+    updatedNewWorkout: Workout | null | undefined
+  ) => {
     setIsNewWorkoutModalVisible(false);
 
-    if (newWorkout?.workoutExercises.length !== 0 && newWorkout) {
+    if (updatedNewWorkout?.workoutExercises.length !== 0 && updatedNewWorkout) {
       const doesWorkoutExist = workoutList.find((workout) => {
-        return workout.workoutId === newWorkout.workoutId;
+        return workout.workoutId === updatedNewWorkout.workoutId;
+      });
+      updatedNewWorkout.workoutExercises.forEach((exercise) => {
+        exercise.sets.forEach((set) => {
+          set.isSetCompleted = false;
+        });
+        exercise.isExerciseCompleted = false;
       });
 
       if (doesWorkoutExist) {
         const updatedWorkoutList = workoutList.map((workout) => {
-          if (workout.workoutId === newWorkout.workoutId) {
-            return newWorkout;
+          if (workout.workoutId === updatedNewWorkout.workoutId) {
+            return updatedNewWorkout;
           } else {
             return workout;
           }
@@ -125,13 +158,13 @@ function WorkoutPage() {
       } else {
         const randomImage = getRandomWorkoutImage();
 
-        const updatedNewWorkout = {
-          ...newWorkout,
+        const freshWorkout = {
+          ...updatedNewWorkout,
           image: randomImage,
           workoutName: newWorkoutName || `Workout ${workoutList.length + 1}`,
         };
 
-        setWorkoutList([...workoutList, updatedNewWorkout]);
+        setWorkoutList([...workoutList, freshWorkout]);
       }
 
       setNewWorkout(null);
@@ -141,6 +174,7 @@ function WorkoutPage() {
 
   const handleOpenModal = () => {
     setIsNewWorkoutModalVisible(true);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     setNewWorkout({ workoutId: generateUUID(), workoutExercises: [] });
   };
 
@@ -168,19 +202,27 @@ function WorkoutPage() {
           <Box style={styles.newWorkoutButtonContainer}>
             <Button
               variant={"solid"}
-              onPress={() => handleOpenModal()}
+              onPress={handleOpenModal}
               style={styles.newWorkoutButton}
             >
               <Text style={styles.newWorkoutButtonText}>
-                Start a workout from scratch
+                Start a new workout
               </Text>
             </Button>
           </Box>
 
-          {workoutList.length !== 0 && (
+          {workoutList.length !== 0 ? (
             <PastWorkouts
               {...{ workoutList, handleStartWorkout, handleDeleteWorkout }}
             />
+          ) : (
+            <Box style={styles.pastWorkoutsTextContainer}>
+              <Text style={styles.pastWorkoutsText}>Your past workouts</Text>
+              <Text style={styles.pastWorkoutsTextInfo}>
+                {`You currently have no past workouts.
+Your finished workouts will appear here.`}
+              </Text>
+            </Box>
           )}
 
           {isNewWorkoutModalVisible && (
@@ -198,6 +240,7 @@ function WorkoutPage() {
                 workoutUserTimerSeconds,
                 workoutUserTimerKey,
                 workoutTimerSecondsStart,
+                handleDeleteExercise,
               }}
             />
           )}

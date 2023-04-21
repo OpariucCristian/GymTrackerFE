@@ -108,11 +108,6 @@ const PastWorkouts = (props: PasWorkoutsProps) => {
                                         >
                                           Sets: {exercise.sets.length}
                                         </Text>
-                                        {/* <Text
-                                          style={styles.workoutExerciseDetails}
-                                        >
-                                          Weight: {exercise.weight} kg {"\n"}
-                                        </Text> */}
                                       </Box>
                                     );
                                   }

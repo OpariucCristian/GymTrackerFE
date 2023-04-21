@@ -7,8 +7,8 @@ export const updateLocalStorageWorkoutList = async (
   try {
     const jsonValue = JSON.stringify(workoutList);
     await AsyncStorage.setItem("workoutList", jsonValue);
-  } catch (e) {
-    console.log(e);
+  } catch (e: any) {
+    throw new Error(e);
   }
 };
 
@@ -20,8 +20,8 @@ export const getWorkoutListFromLocalStorage = async (
       const jsonValue = await AsyncStorage.getItem("workoutList");
       const savedWorkoutList = jsonValue != null ? JSON.parse(jsonValue) : [];
       return savedWorkoutList;
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      throw new Error(e);
     }
   }
 };

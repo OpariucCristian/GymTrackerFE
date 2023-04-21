@@ -6,10 +6,7 @@ export default interface NewWorkoutProps {
   isNewWorkoutModalVisible: boolean | undefined;
   newWorkoutName: string | undefined;
   handleNewWorkoutNameChange: (newName: string) => void;
-  handleSaveNewWorkout:
-    | ((event: GestureResponderEvent) => void)
-    | null
-    | undefined;
+  handleSaveNewWorkout: (updatedNewWorkout: Workout | null | undefined) => void;
   newWorkout: Workout | null | undefined;
   handleUpdateExercise: (updatedExercise?: WorkoutExercise | undefined) => void;
   handleExitNewWorkoutModal:
@@ -21,4 +18,5 @@ export default interface NewWorkoutProps {
   workoutUserTimerKey: React.Key | null | undefined;
   workoutTimerSecondsStart: number | undefined;
   handleAddSecondsUserTimer: (seconds: number) => void;
+  handleDeleteExercise: (exerciseId: string) => void;
 }

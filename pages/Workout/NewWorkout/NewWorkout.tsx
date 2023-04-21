@@ -8,6 +8,7 @@ import exerciseList from "../../../constants/exerciseList";
 import ExerciseInputField from "./ExerciseInputField";
 import NewWorkoutProps from "../../../models/PropModels/NewWorkoutProps";
 import styles from "./NewWorkout.styles";
+import * as Haptics from "expo-haptics";
 
 const NewWorkout = (props: NewWorkoutProps) => {
   const {
@@ -23,6 +24,7 @@ const NewWorkout = (props: NewWorkoutProps) => {
     workoutUserTimerKey,
     workoutTimerSecondsStart,
     handleAddSecondsUserTimer,
+    handleDeleteExercise,
   } = props;
 
   const [newWorkoutNameSearch, setNewWorkoutNameSearch] = useState<string>("");
@@ -36,12 +38,13 @@ const NewWorkout = (props: NewWorkoutProps) => {
     setNewWorkoutNameSearch(newName);
   };
 
-  const isNewWorkoutFinished = () => {
-    const isFinished = newWorkout?.workoutExercises?.every(
-      (exercise) => exercise.isExerciseCompleted
+  const isNewWorkoutNotFinished = () => {
+    const isNotFinished = newWorkout?.workoutExercises?.some(
+      (exercise) => exercise.isExerciseCompleted === false
     );
-    return isFinished;
+    return isNotFinished;
   };
+
   return (
     <React.Fragment>
       <Modal
@@ -67,10 +70,10 @@ const NewWorkout = (props: NewWorkoutProps) => {
           <Button
             variant={"solid"}
             style={styles.createNewWorkoutButton}
-            onPress={handleSaveNewWorkout}
+            onPress={() => handleSaveNewWorkout(newWorkout)}
             isDisabled={
               newWorkout?.workoutExercises?.length === 0 ||
-              !isNewWorkoutFinished()
+              isNewWorkoutNotFinished()
             }
           >
             <Text style={styles.createNewWorkoutButtonText}>
@@ -93,6 +96,7 @@ const NewWorkout = (props: NewWorkoutProps) => {
           ]}
           onComplete={() => {
             handleAddSecondsUserTimer(0);
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           }}
         >
           {({ remainingTime }: any) => {
@@ -131,6 +135,7 @@ const NewWorkout = (props: NewWorkoutProps) => {
               key={index}
               exercise={item}
               handleUpdateExercise={handleUpdateExercise}
+              handleDeleteExercise={handleDeleteExercise}
             />
           )}
         />

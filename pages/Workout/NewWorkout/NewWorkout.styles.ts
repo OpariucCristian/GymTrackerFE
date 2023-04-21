@@ -56,9 +56,10 @@ const styles = EStyleSheet.create({
   exerciseListModalContentContainer: {
     width: "100%",
     height: "90%",
-    gap: "10%",
+    gap: 10,
   },
   searchForExerciseInputContainer: {
+    marignTop: 50,
     width: "80%",
     alignSelf: "center",
   },

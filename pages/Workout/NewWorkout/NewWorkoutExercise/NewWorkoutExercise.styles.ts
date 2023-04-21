@@ -18,7 +18,6 @@ const styles = EStyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
     color: "white",
-    marginTop: "5%",
   },
   exerciseControlTextWeight: {
     color: "white",
@@ -67,6 +66,14 @@ const styles = EStyleSheet.create({
     color: "white",
     fontWeight: "600",
     height: "1.3rem",
+  },
+  exerciseNameContainer: {
+    marginTop: "5%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
   },
 });
 
