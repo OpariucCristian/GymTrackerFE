@@ -5,4 +5,6 @@ export default interface ExerciseCardProps {
   handleAddExercise: (exercise: WorkoutExercise, workoutId: string) => void;
   workoutId: string;
   youtubeLink?: string;
+  primaryMuscles?: string[];
+  secondaryMuscles?: string[];
 }

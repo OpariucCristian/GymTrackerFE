@@ -183,6 +183,8 @@ const NewWorkout = (props: NewWorkoutProps) => {
                     handleAddExercise={handleAddExercise}
                     workoutId={newWorkout?.workoutId || ""}
                     youtubeLink={item.youtubeLink}
+                    primaryMuscles={item.primaryMuscles}
+                    secondaryMuscles={item.secondaryMuscles}
                   />
                 )}
               ></FlatList>
@@ -200,6 +202,8 @@ const NewWorkout = (props: NewWorkoutProps) => {
                     handleAddExercise={handleAddExercise}
                     workoutId={newWorkout?.workoutId || ""}
                     youtubeLink={item.youtubeLink}
+                    primaryMuscles={item.primaryMuscles}
+                    secondaryMuscles={item.secondaryMuscles}
                   />
                 )}
               ></FlatList>

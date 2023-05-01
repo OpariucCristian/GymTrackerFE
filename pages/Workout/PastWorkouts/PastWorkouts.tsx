@@ -46,7 +46,7 @@ const PastWorkouts = (props: PasWorkoutsProps) => {
       <ScrollView style={styles.workoutListContainer}>
         <Box>
           {workoutList.length !== 0 &&
-            workoutList?.reverse().map((workout: Workout, index: number) => {
+            workoutList?.map((workout: Workout, index: number) => {
               const id = workout.workoutId || "";
               return (
                 <Swipeable

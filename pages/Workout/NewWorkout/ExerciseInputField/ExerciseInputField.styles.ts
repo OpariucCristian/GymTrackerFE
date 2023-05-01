@@ -59,6 +59,14 @@ const styles = EStyleSheet.create({
     marginLeft: 5,
   },
   youtubeIcon: { marginRight: 10, marginTop: 10 },
+  exerciseInfoModalContainer: {
+    backgroundColor: "red",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    width: "100%",
+  },
 });
 
 export default styles;

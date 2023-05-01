@@ -7,6 +7,7 @@ import * as Haptics from "expo-haptics";
 interface CurrentWorkoutExerciseSetProps {
   set: ExerciseSet;
   updateSet: (updatedSet: ExerciseSet) => void;
+  deleteSet: (setId: string) => void;
   setNumber: number;
   isFirstSet: boolean;
 }

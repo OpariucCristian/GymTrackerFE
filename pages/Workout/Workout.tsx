@@ -109,16 +109,13 @@ function WorkoutPage() {
     setIsNewWorkoutModalVisible(true);
   };
 
-  const handleDeleteWorkout = async (workoutId: string) => {
+  const handleDeleteWorkout = (workoutId: string) => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
     const newWorkoutList = workoutList.filter((workout) => {
       return workout.workoutId !== workoutId;
     });
 
-    if (newWorkoutList.length === 0) {
-      setWorkoutList([]);
-    } else {
-      setWorkoutList([...newWorkoutList]);
-    }
+    setWorkoutList([...newWorkoutList]);
   };
 
   const handleExitNewWorkoutModal = () => {
@@ -132,6 +129,8 @@ function WorkoutPage() {
   const handleSaveNewWorkout = (
     updatedNewWorkout: Workout | null | undefined
   ) => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
     setIsNewWorkoutModalVisible(false);
 
     if (updatedNewWorkout?.workoutExercises.length !== 0 && updatedNewWorkout) {

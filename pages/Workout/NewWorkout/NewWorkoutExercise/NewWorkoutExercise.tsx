@@ -49,6 +49,20 @@ const NewWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
     handleUpdateExercise(updatedExercise);
   };
 
+  const deleteSet = (setId: string): void => {
+    const updatedSets = exercise.sets.filter((s) => s.setId !== setId);
+
+    const updatedExercise: WorkoutExercise = {
+      exercise: exercise.exercise,
+      workoutId: exercise.workoutId,
+      exerciseId: exercise.exerciseId,
+      isExerciseCompleted: exercise.isExerciseCompleted,
+      sets: updatedSets,
+    };
+
+    handleUpdateExercise(updatedExercise);
+  };
+
   const handleDeleteExercisePress = (): void => {
     handleDeleteExercise(exercise.exerciseId);
   };
@@ -73,6 +87,7 @@ const NewWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
               key={setIndex}
               set={set}
               updateSet={updateSet}
+              deleteSet={deleteSet}
               setNumber={setIndex + 1}
               isFirstSet={isFirstSet}
             />
