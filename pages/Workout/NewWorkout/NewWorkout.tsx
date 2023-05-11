@@ -1,5 +1,5 @@
 import { Box, Button, Modal, Text, Input, FlatList } from "native-base";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import WorkoutTimer from "./WorkoutTimer/WorkoutTimer";
 import { CountdownCircleTimer } from "react-native-countdown-circle-timer";
 import NewWorkoutExercise from "./NewWorkoutExercise";
@@ -9,6 +9,9 @@ import ExerciseInputField from "./ExerciseInputField";
 import NewWorkoutProps from "../../../models/PropModels/NewWorkoutProps";
 import styles from "./NewWorkout.styles";
 import * as Haptics from "expo-haptics";
+import CustomExerciseInputField from "./CustomExerciseInputField/CustomExerciseInputField";
+import { CustomExercise } from "../../../models/custom-exercise";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const NewWorkout = (props: NewWorkoutProps) => {
   const {
@@ -28,6 +31,9 @@ const NewWorkout = (props: NewWorkoutProps) => {
   } = props;
 
   const [newWorkoutNameSearch, setNewWorkoutNameSearch] = useState<string>("");
+  const [customExerciseList, setCustomExerciseList] = useState<
+    CustomExercise[]
+  >([]);
 
   const exerciseListMemo = React.useMemo(() => exerciseList, []);
 
@@ -44,6 +50,45 @@ const NewWorkout = (props: NewWorkoutProps) => {
     );
     return isNotFinished;
   };
+
+  const addCustomExercise = async (exercise: CustomExercise): Promise<void> => {
+    try {
+      const customExerciseList = await AsyncStorage.getItem(
+        "customExerciseList"
+      );
+      if (customExerciseList) {
+        const customExerciseListParsed = JSON.parse(customExerciseList);
+        const updatedWorkoutList = [...customExerciseListParsed, exercise];
+        const jsonValue = JSON.stringify(updatedWorkoutList);
+        await AsyncStorage.setItem("customExerciseList", jsonValue);
+        setCustomExerciseList(updatedWorkoutList);
+      } else {
+        const jsonValue = JSON.stringify([exercise]);
+        await AsyncStorage.setItem("customExerciseList", jsonValue);
+        setCustomExerciseList([exercise]);
+      }
+    } catch (e: any) {
+      throw new Error(e);
+    }
+  };
+
+  const fetchCustomExerciseList = async (): Promise<void> => {
+    try {
+      const customExerciseList = await AsyncStorage.getItem(
+        "customExerciseList"
+      );
+      if (customExerciseList) {
+        const customExerciseListParsed = JSON.parse(customExerciseList);
+        setCustomExerciseList(customExerciseListParsed);
+      }
+    } catch (e: any) {
+      throw new Error(e);
+    }
+  };
+
+  useEffect(() => {
+    fetchCustomExerciseList();
+  }, []);
 
   return (
     <React.Fragment>
@@ -172,29 +217,38 @@ const NewWorkout = (props: NewWorkoutProps) => {
                 }
               />
             </Box>
-
+            <CustomExerciseInputField addCustomExercise={addCustomExercise} />
             {!newWorkoutNameSearch ? (
-              <FlatList
-                data={exerciseListMemo}
-                renderItem={({ item, index }) => (
-                  <ExerciseInputField
-                    key={index}
-                    name={item.name}
-                    handleAddExercise={handleAddExercise}
-                    workoutId={newWorkout?.workoutId || ""}
-                    youtubeLink={item.youtubeLink}
-                    primaryMuscles={item.primaryMuscles}
-                    secondaryMuscles={item.secondaryMuscles}
-                  />
-                )}
-              ></FlatList>
+              <>
+                <FlatList
+                  data={[...customExerciseList, ...exerciseListMemo]}
+                  renderItem={({ item, index }) => (
+                    <ExerciseInputField
+                      key={index}
+                      name={item.name}
+                      handleAddExercise={handleAddExercise}
+                      workoutId={newWorkout?.workoutId || ""}
+                      youtubeLink={item.youtubeLink || ""}
+                      primaryMuscles={item.primaryMuscles}
+                      secondaryMuscles={item.secondaryMuscles}
+                    />
+                  )}
+                ></FlatList>
+              </>
             ) : (
               <FlatList
-                data={exerciseListMemo.filter((exercise) => {
-                  return exercise.name
-                    .toLowerCase()
-                    .includes(newWorkoutNameSearch.toLowerCase());
-                })}
+                data={[
+                  ...customExerciseList.filter((exercise) => {
+                    return exercise.name
+                      .toLowerCase()
+                      .includes(newWorkoutNameSearch.toLowerCase());
+                  }),
+                  ...exerciseListMemo.filter((exercise) => {
+                    return exercise.name
+                      .toLowerCase()
+                      .includes(newWorkoutNameSearch.toLowerCase());
+                  }),
+                ]}
                 renderItem={({ item, index }) => (
                   <ExerciseInputField
                     key={index}

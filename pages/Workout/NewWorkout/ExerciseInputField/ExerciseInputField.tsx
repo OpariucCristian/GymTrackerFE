@@ -55,11 +55,26 @@ const ExerciseCard = (props: ExerciseCardProps) => {
     <React.Fragment>
       <Box style={styles.exerciseInputFieldContainer}>
         <Box style={styles.contentContainer}>
-          <Text style={styles.exerciseText}>{name}</Text>
+          <Box>
+            <Text style={styles.exerciseText}>
+              {name.length > 25 ? `${name.slice(0, 25)}...` : name}
+            </Text>
+            {primaryMuscles && (
+              <Text style={styles.exerciseTextMuscleGroup}>{`${primaryMuscles[0]
+                .charAt(0)
+                .toUpperCase()}${primaryMuscles[0].slice(1)}${
+                primaryMuscles[1]
+                  ? primaryMuscles[0] !== primaryMuscles[1]
+                    ? `, ${primaryMuscles[1]}`
+                    : ""
+                  : ""
+              }`}</Text>
+            )}
+          </Box>
           <Box style={styles.workoutControlsContainer}>
-            {youtubeLink && (
+            {(youtubeLink || primaryMuscles || secondaryMuscles) && (
               <Text style={styles.youtubeIcon} onPress={handleInfoIconPress}>
-                <FontAwesomeIcon size={25} icon={faCircleInfo} />
+                <FontAwesomeIcon size={23} icon={faCircleInfo} />
               </Text>
             )}
 
@@ -71,9 +86,9 @@ const ExerciseCard = (props: ExerciseCardProps) => {
       <Modal isOpen={isInfoModalOpen}>
         <Box style={styles.exerciseInfoModalContainer}>
           <Modal.CloseButton onPress={toggleInfoModalOpen} />
-
-          <Text>
-            Primary muscles:{" "}
+          <Text style={styles.infoModalTitle}>Muscles Worked</Text>
+          <Text style={styles.infoModalDescription}>
+            Primary:{" "}
             {primaryMuscles?.map((muscle, index) => {
               return (
                 <React.Fragment key={index}>
@@ -85,8 +100,8 @@ const ExerciseCard = (props: ExerciseCardProps) => {
               );
             })}
           </Text>
-          <Text>
-            Secondary muscles:{" "}
+          <Text style={styles.infoModalDescription}>
+            Secondary:{" "}
             {secondaryMuscles?.map((muscle, index) => {
               return (
                 <React.Fragment key={index}>
@@ -98,9 +113,11 @@ const ExerciseCard = (props: ExerciseCardProps) => {
               );
             })}
           </Text>
-          <Text onPress={() => Linking.openURL(`${youtubeLink}`)}>
-            <FontAwesomeIcon size={30} icon={faYoutube} />
-          </Text>
+          {youtubeLink && (
+            <Text onPress={() => Linking.openURL(`${youtubeLink}`)}>
+              <FontAwesomeIcon size={30} icon={faYoutube} />
+            </Text>
+          )}
         </Box>
       </Modal>
     </React.Fragment>

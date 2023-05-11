@@ -77,7 +77,7 @@ const NewWorkoutExerciseSet = (props: CurrentWorkoutExerciseSetProps) => {
           <FormControl>
             {isFirstSet && (
               <FormControl.Label style={styles.inputFieldLabel}>
-                <Text style={styles.inputFieldLabelText}>Weight</Text>
+                <Text style={styles.inputFieldLabelText}>Kg/Sec.</Text>
               </FormControl.Label>
             )}
             <Input
