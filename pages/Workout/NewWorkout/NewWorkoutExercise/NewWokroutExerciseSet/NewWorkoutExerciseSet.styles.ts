@@ -4,7 +4,7 @@ const styles = EStyleSheet.create({
   exerciseControlsContainer: {
     flexDirection: "row",
     display: "flex",
-    width: "100%",
+    width: "90%",
     marginTop: "2.5%",
   },
   inputField: {
@@ -27,6 +27,11 @@ const styles = EStyleSheet.create({
     width: "3.6rem",
     height: "auto",
   },
+  exerciseDeleteContainer: {
+    width: 5,
+    height: "auto",
+  },
+
   checkboxContainer: {
     height: "auto",
   },
@@ -52,6 +57,25 @@ const styles = EStyleSheet.create({
   inputFieldLabelText: {
     color: "white",
     fontWeight: "600",
+  },
+
+  setContainer: {
+    display: "flex",
+    flexDirection: "row",
+
+    justifyContent: "space-between",
+    width: "100%",
+    alignItems: "stretch",
+  },
+  deleteSetButtonContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+
+  deleteSetButton: {
+    width: "2rem",
+    marginTop: "0.3rem",
   },
 });
 

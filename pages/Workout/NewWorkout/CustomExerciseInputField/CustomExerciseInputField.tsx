@@ -66,7 +66,7 @@ const CustomExerciseInputField = (props: CustomExerciseCardProps) => {
               <Select
                 minWidth="200"
                 accessibilityLabel="Choose Muscle group"
-                placeholder="Muscle group"
+                placeholder="Primary Muscle group"
                 _selectedItem={{
                   bg: "teal.600",
                   endIcon: <CheckIcon size={5} />,
@@ -96,7 +96,7 @@ const CustomExerciseInputField = (props: CustomExerciseCardProps) => {
               <Select
                 minWidth="200"
                 accessibilityLabel="Choose Muscle group"
-                placeholder="Muscle group"
+                placeholder="Secondary Muscle group"
                 _selectedItem={{
                   bg: "teal.600",
                   endIcon: <CheckIcon size={5} />,

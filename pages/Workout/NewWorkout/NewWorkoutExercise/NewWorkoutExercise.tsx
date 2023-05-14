@@ -84,7 +84,7 @@ const NewWorkoutExercise = (props: CurrentWorkoutExerciseProps) => {
           const isFirstSet = setIndex === 0;
           return (
             <NewWorkoutExerciseSet
-              key={setIndex}
+              key={set.setId}
               set={set}
               updateSet={updateSet}
               deleteSet={deleteSet}

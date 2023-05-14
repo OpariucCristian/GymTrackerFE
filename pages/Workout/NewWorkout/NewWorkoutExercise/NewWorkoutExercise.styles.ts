@@ -11,9 +11,6 @@ const styles = EStyleSheet.create({
     justifyContent: "center",
     width: "100%",
   },
-  exerciseControlsContainer: {
-    marginTop: "5%",
-  },
   exerciseName: {
     fontSize: 15,
     fontWeight: "bold",
